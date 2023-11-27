@@ -7,3 +7,6 @@ data-gen-service:
       incoming-call-chance: 0.5
       incoming-call-code: "01"
       outcoming-call-code: "02"
+
+    phone-number-generator:
+      existing-chance: 0.7
