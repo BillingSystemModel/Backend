@@ -16,3 +16,7 @@ data-gen-service:
       lower-bound: 2023/01/01 00:00:00
       upper-bound: 2023/02/01 00:00:00
       max-duration: 1h
+
+    cdrs-generator:
+      cdr-file-path: files/cdr.txt
+      count: 1000
