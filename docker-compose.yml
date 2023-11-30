@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  config-server:
+    build:
+      context: ConfigServer
+      dockerfile: Dockerfile
+    ports:
+      - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+
+  data-gen:
+    build:
+      context: DataGen
+      dockerfile: Dockerfile
+    ports:
+      - "${DATA_GEN_PORT}:${DATA_GEN_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+    volumes:
+      - ./files:/home/files
+
+networks:
+  billing-system-network:
+    driver: bridge
