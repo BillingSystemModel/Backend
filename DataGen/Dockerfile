@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine
+FROM amazoncorretto:17.0.2-alpine
 LABEL description="Образ для микросервиса 'data-gen'"
 
 ARG JAR_FILE=target/DataGen-0.0.1.jar
