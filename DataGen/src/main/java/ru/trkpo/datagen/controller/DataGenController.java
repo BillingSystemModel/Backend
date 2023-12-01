@@ -1,4 +1,4 @@
-package ru.trkpo.datagen;
+package ru.trkpo.datagen.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
