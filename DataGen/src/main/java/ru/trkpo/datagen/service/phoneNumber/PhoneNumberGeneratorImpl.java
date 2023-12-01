@@ -2,6 +2,7 @@ package ru.trkpo.datagen.service.phoneNumber;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.trkpo.common.service.phoneNumber.PhoneNumberService;
 
 import java.util.Random;
 
@@ -13,11 +14,16 @@ public class PhoneNumberGeneratorImpl implements PhoneNumberGenerator {
 
     private final Random random = new Random();
 
+    private final PhoneNumberService phoneNumberService;
+
+    public PhoneNumberGeneratorImpl(PhoneNumberService phoneNumberService) {
+        this.phoneNumberService = phoneNumberService;
+    }
+
     @Override
     public String generateNumber() {
-        // TODO: Реализовать получение существующего номера из БД
         if (random.nextDouble() <= existingNumberChance)
-            return null;
+            return phoneNumberService.findRandom().getPhoneNumber();
         else
             return generateNewNumber();
     }
