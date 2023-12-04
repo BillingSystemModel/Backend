@@ -1,0 +1,18 @@
+brt-service:
+  port: ${BRT_PORT:8082}
+  servlet-context-path: /brt
+
+  destination-queue:
+    tariffication: TARIFFICATION
+    tariffication-request: TARIFFICATION_REQUEST
+
+  services:
+    cdr:
+      date-time-format: yyyy/MM/dd HH:mm:ss
+      source-url: "http://data-gen:${DATA_GEN_PORT:8081}/data-gen/files/cdr"
+
+    cdr-plus:
+      file-path: /home/files/cdr-plus
+
+    report:
+      source-url: "http://hrs:${HRS_PORT:8083}/hrs/files/reports"
