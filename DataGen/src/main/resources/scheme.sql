@@ -142,15 +142,15 @@ create table if not exists call_history
     id                     integer generated always as identity
         constraint call_history_pk
             primary key,
-    client_phone_number_id bigint  not null
+    client_phone_number_id bigint    not null
         constraint call_history_phone_numbers_client_id_fk
             references phone_numbers,
-    call_type_id           char(2) not null
+    call_type_id           char(2)   not null
         constraint call_history_call_types_id_fk
             references call_types,
-    date_start             date    not null,
-    date_end               date    not null,
-    cost                   money   not null
+    date_start             timestamp not null,
+    date_end               timestamp not null,
+    cost                   money     not null
 );
 
 comment on table call_history is 'История всех звонков';
