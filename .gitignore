@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 .env
+files/
 
 ### IntelliJ IDEA ###
 .idea/
