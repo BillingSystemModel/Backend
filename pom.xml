@@ -21,6 +21,8 @@
         <module>DataGen</module>
         <module>Common</module>
         <module>BRT</module>
+        <module>HRS</module>
+        <module>CRM</module>
     </modules>
 
     <properties>

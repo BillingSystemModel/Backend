@@ -9,10 +9,10 @@ brt-service:
   services:
     cdr:
       date-time-format: yyyy/MM/dd HH:mm:ss
-      source-url: "http://data-gen:${DATA_GEN_PORT:8081}/data-gen/files/cdr"
+      source-url: "http://data-gen:${DATA_GEN_PORT:8081}/data-gen/files/cdr.txt"
 
     cdr-plus:
-      file-path: /home/files/cdr-plus
+      file-path: /home/files/cdr-plus.txt
 
-    report:
-      source-url: "http://hrs:${HRS_PORT:8083}/hrs/files/reports"
+    tariffication-report:
+      source-url: "http://hrs:${HRS_PORT:8083}/hrs/files/tariffication-reports.txt"

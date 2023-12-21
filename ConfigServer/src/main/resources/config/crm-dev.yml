@@ -1,0 +1,6 @@
+crm-service:
+  port: ${CRM_PORT:8080}
+  servlet-context-path: /crm
+
+  destination-queue:
+    tariffication: tariffication-mq

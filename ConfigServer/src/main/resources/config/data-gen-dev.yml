@@ -19,4 +19,4 @@ data-gen-service:
 
     cdrs-generator:
       cdr-file-path: files/cdr.txt
-      count: 1000
+      count: 100
