@@ -3,8 +3,8 @@ brt-service:
   servlet-context-path: /brt
 
   destination-queue:
-    tariffication: TARIFFICATION
-    tariffication-request: TARIFFICATION_REQUEST
+    tariffication: tariffication-mq
+    tariffication-request: tariffication-request-mq
 
   services:
     cdr:

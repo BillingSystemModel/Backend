@@ -62,6 +62,46 @@ services:
     volumes:
       - ./files:/home/files
 
+  brt:
+    build:
+      context: BRT
+      dockerfile: Dockerfile
+    ports:
+      - "${BRT_PORT}:${BRT_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+    volumes:
+      - ./files:/home/files
+
+  hrs:
+    build:
+      context: HRS
+      dockerfile: Dockerfile
+    ports:
+      - "${HRS_PORT}:${HRS_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+    volumes:
+      - ./files:/home/files
+
+  crm:
+    build:
+      context: CRM
+      dockerfile: Dockerfile
+    ports:
+      - "${CRM_PORT}:${CRM_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+
 networks:
   billing-system-network:
     driver: bridge
