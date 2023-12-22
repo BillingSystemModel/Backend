@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface PhoneNumberRepository extends CrudRepository<PhoneNumber, Long> {
 
     Page<PhoneNumber> findAll(Pageable pageable);
-
+  
     Optional<PhoneNumber> findByPhoneNumber(String phoneNumber);
 }
