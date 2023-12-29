@@ -13,9 +13,25 @@ services:
     healthcheck:
       test: "pg_isready -d ${POSTGRESQL_DB} -U ${POSTGRESQL_USER}"
       interval: 5s
-      timeout: 2s
+      timeout: 3s
       retries: 5
-      start_period: 10s
+    networks:
+      - billing-system-network
+    restart: always
+
+  activemq-artemis:
+    image: apache/activemq-artemis:latest-alpine
+    environment:
+      - ARTEMIS_USER=${AMQ_ARTEMIS_USER}
+      - ARTEMIS_PASSWORD=${AMQ_ARTEMIS_PASSWORD}
+    ports:
+      - "8161:8161"
+      - "${AMQ_ARTEMIS_PORT}:61616"
+    healthcheck:
+      test: "curl --silent --fail http://localhost:8161/console || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - billing-system-network
     restart: always
@@ -45,6 +61,46 @@ services:
     restart: always
     volumes:
       - ./files:/home/files
+
+  brt:
+    build:
+      context: BRT
+      dockerfile: Dockerfile
+    ports:
+      - "${BRT_PORT}:${BRT_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+    volumes:
+      - ./files:/home/files
+
+  hrs:
+    build:
+      context: HRS
+      dockerfile: Dockerfile
+    ports:
+      - "${HRS_PORT}:${HRS_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
+    volumes:
+      - ./files:/home/files
+
+  crm:
+    build:
+      context: CRM
+      dockerfile: Dockerfile
+    ports:
+      - "${CRM_PORT}:${CRM_PORT}"
+    env_file:
+      - .env
+    networks:
+      - billing-system-network
+    restart: always
 
 networks:
   billing-system-network:
