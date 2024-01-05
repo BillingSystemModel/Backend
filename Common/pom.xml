@@ -44,6 +44,12 @@
             <artifactId>spring-boot-starter-artemis</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+        </dependency>
     </dependencies>
 
 </project>
