@@ -10,12 +10,12 @@ INSERT INTO public.telecom_operators (title) VALUES ('Ромашка');
 INSERT INTO public.call_types (id, type) VALUES ('01', 'Исходящий');
 INSERT INTO public.call_types (id, type) VALUES ('02', 'Входящий');
 
-INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, null, 100, '$50.00', false, '$1.00', true);
-INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, null, 500, '$200.00', false, '$1.00', true);
+INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, null, 100, '$5.00', false, '$0.10', true);
+INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, null, 500, '$20.00', false, '$0.10', true);
 INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, 1, 0, '$0.00', false, '$0.00', false);
 
-INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (1000, '$100.00', false, '$0.10', true);
-INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (10000, '$400.00', false, '$0.10', true);
+INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (1000, '$10.00', false, '$0.10', true);
+INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (10000, '$40.00', false, '$0.10', true);
 
 INSERT INTO public.tariffs_config (tariff_id, telephony_package_id, internet_package_id) VALUES ('01', 2, null);
 INSERT INTO public.tariffs_config (tariff_id, telephony_package_id, internet_package_id) VALUES ('02', 1, 1);
@@ -40,10 +40,10 @@ INSERT INTO public.client_details (client_id, number_personal_account, email, pa
 INSERT INTO public.client_details (client_id, number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (6, 6, 'msymcoxe5@gmail.com', '6', null, '6666666666', '2022-12-06', '6');
 INSERT INTO public.client_details (client_id, number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (7, 7, 'kourtema@gmail.com', '7', null, '7777777777', '2022-12-07', '7');
 
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (1, '+71111111111', '$100.00', '01');
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (2, '+72222222222', '$200.00', '02');
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (3, '+73333333333', '$300.00', '03');
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (4, '+74444444444', '$400.00', '04');
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (5, '+75555555555', '$500.00', '05');
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (6, '+76666666666', '$600.00', '06');
-INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (7, '+77777777777', '$700.00', '01');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (1, '+71111111111', '$1.00', '01');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (2, '+72222222222', '$2.00', '02');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (3, '+73333333333', '$3.00', '03');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (4, '+74444444444', '$4.00', '04');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (5, '+75555555555', '$5.00', '05');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (6, '+76666666666', '$6.00', '06');
+INSERT INTO public.phone_numbers (client_id, phone_number, balance, tariff_id) VALUES (7, '+77777777777', '$7.00', '01');

@@ -3,11 +3,13 @@ package ru.trkpo.common.service.phoneNumber;
 import ru.trkpo.common.data.entity.PhoneNumber;
 import ru.trkpo.common.data.entity.Tariff;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 
 public interface PhoneNumberService {
 
     PhoneNumber findByPhoneNumber(String phoneNumber);
     PhoneNumber findRandom();
     Tariff findActiveTariff(String phoneNumber);
+    BigDecimal updateBalance(String phoneNumber, BigDecimal money);
+    String changeTariff(String phoneNumber, String tariffCode);
 }
