@@ -37,4 +37,10 @@ public class LocalDateTimeGeneratorImpl implements LocalDateTimeGenerator {
         LocalDateTime endDateTime = LocalDateTime.ofEpochSecond(endSeconds, 0, ZoneOffset.UTC);
         return new Pair<>(startDateTime, endDateTime);
     }
+
+    @Override
+    public void updateDateTimeBoubds() {
+        lowerBound = lowerBound.plusMonths(1);
+        upperBound = upperBound.plusMonths(1);
+    }
 }
