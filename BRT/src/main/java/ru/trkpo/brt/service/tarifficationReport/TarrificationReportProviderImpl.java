@@ -1,5 +1,6 @@
 package ru.trkpo.brt.service.tarifficationReport;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TarrificationReportProviderImpl implements TarifficationReportProvider {
 
     @Value("${brt-service.services.tariffication-report.source-url}")
@@ -22,11 +24,6 @@ public class TarrificationReportProviderImpl implements TarifficationReportProvi
     private BufferedReader reader;
 
     private final Deserializer<TarifficationReportDTO> reportDeserializer;
-
-    public TarrificationReportProviderImpl(Deserializer<TarifficationReportDTO> reportDeserializer) {
-        this.reportDeserializer = reportDeserializer;
-    }
-
 
     @Override
     public void init() throws IOException {

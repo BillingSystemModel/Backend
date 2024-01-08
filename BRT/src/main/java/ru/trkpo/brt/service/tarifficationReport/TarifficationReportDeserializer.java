@@ -32,8 +32,8 @@ public class TarifficationReportDeserializer implements Deserializer<Tarifficati
         int callDataCount = Integer.parseInt(split[4]);
         BigDecimal cost = BigDecimal.valueOf(Double.parseDouble(split[3]));
         TarifficationReportDTO report = new TarifficationReportDTO(
-                split[0],
                 split[1],
+                split[0],
                 new ArrayList<>(callDataCount),
                 Integer.parseInt(split[2]),
                 cost

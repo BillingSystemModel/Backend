@@ -27,10 +27,10 @@ public class TariffServiceImpl implements TariffService {
     }
 
     @Override
+    @Transactional
     public BigDecimal applyTariff(CDRPlus cdrPlus) {
-        Tariff tariff = transactionTemplate.execute(status ->
-                tariffRepository.findByIdEquals(cdrPlus.getCallTypeCode())
-                        .orElseThrow(() -> new NoDataFoundException("There is no such tariff")));
+        Tariff tariff = tariffRepository.findByIdEquals(cdrPlus.getCallTypeCode())
+                .orElseThrow(() -> new NoDataFoundException("There is no such tariff"));
 
         List<TariffConfig> tariffConfigList = tariff.getTariffConfigList();
         BigDecimal totalCost = BigDecimal.ZERO;

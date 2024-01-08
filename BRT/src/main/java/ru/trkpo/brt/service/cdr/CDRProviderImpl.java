@@ -1,9 +1,9 @@
 package ru.trkpo.brt.service.cdr;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.trkpo.common.data.CDR;
 import ru.trkpo.common.service.Deserializer;
 
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CDRProviderImpl implements CDRProvider {
 
     @Value("${brt-service.services.cdr.source-url}")
@@ -24,10 +25,6 @@ public class CDRProviderImpl implements CDRProvider {
     private BufferedReader reader;
 
     private final Deserializer<CDR> cdrDeserializer;
-
-    public CDRProviderImpl(Deserializer<CDR> cdrDeserializer) {
-        this.cdrDeserializer = cdrDeserializer;
-    }
 
     @Override
     public void init() throws IOException {

@@ -1,5 +1,6 @@
 package ru.trkpo.hrs.service.tarifficationReport;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.trkpo.common.data.dto.TarifficationReportDTO;
@@ -9,16 +10,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 @Service
+@RequiredArgsConstructor
 public class TarifficationReportWriterImpl implements TarifficationReportWriter {
 
     @Value("${hrs-service.services.tariffication-report.file-path}")
     private String reportFilePath;
 
     private final Serializer<TarifficationReportDTO> reportSerializer;
-
-    public TarifficationReportWriterImpl(Serializer<TarifficationReportDTO> reportSerializer) {
-        this.reportSerializer = reportSerializer;
-    }
 
     @Override
     public void init() throws IOException {
