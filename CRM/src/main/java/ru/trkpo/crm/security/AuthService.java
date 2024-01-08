@@ -13,6 +13,8 @@ import ru.trkpo.common.service.clientDetails.ClientDetailsService;
 import ru.trkpo.common.service.phoneNumber.PhoneNumberService;
 import ru.trkpo.crm.security.config.JWTService;
 import ru.trkpo.crm.security.data.auth.AuthRequest;
+import ru.trkpo.crm.security.data.auth.ChangePasswordRequest;
+import ru.trkpo.crm.security.data.auth.ChangePasswordResponse;
 import ru.trkpo.crm.security.data.auth.RegisterRequest;
 import ru.trkpo.crm.security.data.user.User;
 import ru.trkpo.crm.security.data.user.UserRepository;
@@ -61,5 +63,20 @@ public class AuthService {
         );
         User user = userRepository.findByPhoneNumber(authRequest.getPhoneNumber()).orElseThrow();
         return jwtService.generateToken(user);
+    }
+
+    public ChangePasswordResponse changePassword(ChangePasswordRequest changePasswordRequest) {
+        String phoneNumber = changePasswordRequest.getUsername();
+        Client client = clientService.findByPhoneNumber(phoneNumber);
+        ClientDetails clientDetails = client.getClientDetails();
+        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), clientDetails.getPassword())) {
+            return new ChangePasswordResponse(false, "Invalid current password");
+        } else if (changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())) {
+            return new ChangePasswordResponse(false, "New password matches current password");
+        }
+        String newPasswordHash = passwordEncoder.encode(changePasswordRequest.getNewPassword());
+        clientDetails.setPassword(newPasswordHash);
+        clientService.saveClient(client);
+        return new ChangePasswordResponse(true, "Password changed successfully");
     }
 }

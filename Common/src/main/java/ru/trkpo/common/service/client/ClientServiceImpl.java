@@ -2,6 +2,7 @@ package ru.trkpo.common.service.client;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.trkpo.common.data.entity.Client;
 import ru.trkpo.common.exception.NoDataFoundException;
 
@@ -10,6 +11,7 @@ import ru.trkpo.common.exception.NoDataFoundException;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
+    private final TransactionTemplate transactionTemplate;
 
     @Override
     public Client createNewClient(String[] fio) {
@@ -30,6 +32,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client saveClient(Client client) {
         return clientRepository.save(client);
+    }
+
+    @Override
+    public Client findByPhoneNumber(String phoneNumber) {
+        return transactionTemplate.execute(status ->
+                clientRepository.findByPhoneNumber(phoneNumber).orElseThrow(
+                        () -> new NoDataFoundException("No such client")
+                )
+        );
     }
 
 }
