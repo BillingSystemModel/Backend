@@ -14,4 +14,5 @@ public interface PhoneNumberService {
     BigDecimal updateBalance(String phoneNumber, BigDecimal money);
     String changeTariff(String phoneNumber, String tariffCode);
     PhoneNumber createNewPhoneNumber(Client client, String phoneNumber);
+    PhoneNumber save(PhoneNumber phoneNumber);
 }

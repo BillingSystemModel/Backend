@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.trkpo.common.data.CDRPlus;
 import ru.trkpo.common.data.dto.CallDataDTO;
 import ru.trkpo.common.data.dto.TarifficationReportDTO;
-import ru.trkpo.common.data.entity.CallHistory;
-import ru.trkpo.common.service.callHistory.CallHistoryService;
 import ru.trkpo.common.service.tariff.TariffService;
 import ru.trkpo.hrs.service.CallData.CallDataSaver;
 import ru.trkpo.hrs.service.cdrPlus.CDRPlusProvider;

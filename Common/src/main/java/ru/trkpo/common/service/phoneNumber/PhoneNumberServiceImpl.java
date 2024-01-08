@@ -81,16 +81,23 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 
     @Override
     public PhoneNumber createNewPhoneNumber(Client client, String phoneNumber) {
-        if (phoneNumberRepository.findByPhoneNumber(phoneNumber).isEmpty()) {
-            return PhoneNumber.builder()
-                    .clientId(null)
-                    .client(client)
-                    .phoneNumber(phoneNumber)
-                    .balance(BigDecimal.ZERO)
-                    .tariff(null)
-                    .callHistoryList(null)
-                    .build();
-        }
-        throw new DataAlreadyExistsException("Phone number already exists");
+        return transactionTemplate.execute(status -> {
+            if (phoneNumberRepository.findByPhoneNumber(phoneNumber).isEmpty()) {
+                return PhoneNumber.builder()
+                        .clientId(null)
+                        .client(client)
+                        .phoneNumber(phoneNumber)
+                        .balance(BigDecimal.ZERO)
+                        .tariff(null)
+                        .callHistoryList(null)
+                        .build();
+            }
+            throw new DataAlreadyExistsException("Phone number already exists");
+        });
+    }
+
+    @Override
+    public PhoneNumber save(PhoneNumber phoneNumber) {
+        return transactionTemplate.execute(status -> phoneNumberRepository.save(phoneNumber));
     }
 }
