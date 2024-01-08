@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+import ru.trkpo.common.data.entity.Client;
 import ru.trkpo.common.data.entity.PhoneNumber;
 import ru.trkpo.common.data.entity.Tariff;
+import ru.trkpo.common.exception.DataAlreadyExistsException;
 import ru.trkpo.common.exception.NoDataFoundException;
 import ru.trkpo.common.service.tariff.TariffRepository;
 
@@ -75,5 +77,20 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
             phoneNumberRepository.updatePhoneNumberTariff(tariff, phone.getClientId());
             return tariff.getId();
         });
+    }
+
+    @Override
+    public PhoneNumber createNewPhoneNumber(Client client, String phoneNumber) {
+        if (phoneNumberRepository.findByPhoneNumber(phoneNumber).isEmpty()) {
+            return PhoneNumber.builder()
+                    .clientId(null)
+                    .client(client)
+                    .phoneNumber(phoneNumber)
+                    .balance(BigDecimal.ZERO)
+                    .tariff(null)
+                    .callHistoryList(null)
+                    .build();
+        }
+        throw new DataAlreadyExistsException("Phone number already exists");
     }
 }

@@ -1,16 +1,15 @@
 package ru.trkpo.common.data.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "call_history")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CallHistory {
@@ -20,11 +19,11 @@ public class CallHistory {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "client_phone_number_id", referencedColumnName = "client_id")
+    @JoinColumn(name = "client_phone_number_id")
     private PhoneNumber phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name = "call_type_id", referencedColumnName = "id")
+    @JoinColumn(name = "call_type_id")
     private CallType callType;
 
     @Column(name = "date_start")

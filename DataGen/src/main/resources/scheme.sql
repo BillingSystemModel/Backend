@@ -7,7 +7,7 @@ create table if not exists clients
     last_name  varchar(50) not null,
     patronymic varchar(50),
     age        smallint,
-    birthday   date        not null
+    birthday   date
 );
 
 comment on table clients is 'Таблица клиентов оператора "Ромашка"';
@@ -26,7 +26,7 @@ comment on column clients.birthday is 'Дата рождения клиента'
 
 create table if not exists client_details
 (
-    client_id               bigint       not null
+    client_id               bigint generated always as identity
         constraint client_details_pk
             primary key
         constraint client_details_clients_id_fk
@@ -34,12 +34,12 @@ create table if not exists client_details
     number_personal_account integer      not null
         constraint client_details_pk2
             unique,
-    email                   varchar(50)  not null
+    email                   varchar(50)
         constraint client_details_pk3
             unique,
     password                varchar(255) not null,
-    region                  varchar(255),
-    passport                varchar(10)  not null
+    region                  varchar(255) not null,
+    passport                varchar(10)
         constraint client_details_pk4
             unique,
     contract_date           date         not null,
@@ -85,7 +85,7 @@ comment on column tariffs.description is 'Описание тарифа';
 
 create table if not exists phone_numbers
 (
-    client_id    bigint          not null
+    client_id    bigint generated always as identity
         constraint phone_numbers_pk
             primary key
         constraint phone_numbers_clients_id_fk
@@ -255,6 +255,19 @@ comment on column tariffs_config.telephony_package_id is 'ID пакета зво
 
 comment on column tariffs_config.internet_package_id is 'ID пакета интернета';
 
+create table if not exists users
+(
+    client_id                     bigint generated always as identity
+        constraint users_pk
+            primary key
+        constraint users_clients_id_fk
+            references clients,
+    role                   varchar not null
+);
+
+comment on table users is 'Таблица пользователей';
+
+comment on column users.client_id is 'ID клиента';
 
 CREATE OR REPLACE FUNCTION get_calls_report(
     phone_number_param varchar(16),

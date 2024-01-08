@@ -1,5 +1,6 @@
 package ru.trkpo.common.service.phoneNumber;
 
+import ru.trkpo.common.data.entity.Client;
 import ru.trkpo.common.data.entity.PhoneNumber;
 import ru.trkpo.common.data.entity.Tariff;
 
@@ -12,4 +13,5 @@ public interface PhoneNumberService {
     Tariff findActiveTariff(String phoneNumber);
     BigDecimal updateBalance(String phoneNumber, BigDecimal money);
     String changeTariff(String phoneNumber, String tariffCode);
+    PhoneNumber createNewPhoneNumber(Client client, String phoneNumber);
 }

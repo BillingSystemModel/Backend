@@ -1,15 +1,14 @@
 package ru.trkpo.common.data.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "tariffs")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tariff {
@@ -24,9 +23,9 @@ public class Tariff {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "tariff", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tariff")
     private List<PhoneNumber> phoneNumberList;
 
-    @OneToMany(mappedBy = "tariff", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tariff")
     private List<TariffConfig> tariffConfigList;
 }

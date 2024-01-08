@@ -4,3 +4,6 @@ crm-service:
 
   destination-queue:
     tariffication: tariffication-mq
+
+  jwt-secret: ${JWT_SECRET}
+  security-enabled: true

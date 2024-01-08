@@ -1,16 +1,15 @@
 package ru.trkpo.common.data.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Table(name = "telephony_packages")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class TelephonyPackage {
@@ -21,11 +20,11 @@ public class TelephonyPackage {
     private Integer packageId;
 
     @ManyToOne
-    @JoinColumn(name = "call_type_id", referencedColumnName = "id")
+    @JoinColumn(name = "call_type_id")
     private CallType callType;
 
     @ManyToOne
-    @JoinColumn(name = "operator_id", referencedColumnName = "id")
+    @JoinColumn(name = "operator_id")
     private TelecomOperator operator;
 
     @Column(name = "package_of_minutes", nullable = false)
