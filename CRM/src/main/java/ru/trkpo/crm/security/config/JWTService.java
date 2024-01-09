@@ -18,8 +18,11 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    @Value("${crm-service.jwt-secret}")
-    private String SECRET_KEY;
+    @Value("${crm-service.jwt.secret}")
+    private String jwtSecretKey;
+
+    @Value("${crm-service.jwt.expiration}")
+    private long jwtExpiration;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -52,7 +55,7 @@ public class JWTService {
                .setClaims(extraClaims)
                .setSubject(userDetails.getUsername())
                .setIssuedAt(new Date(System.currentTimeMillis()))
-               .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+               .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                .compact();
     }
@@ -67,7 +70,7 @@ public class JWTService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

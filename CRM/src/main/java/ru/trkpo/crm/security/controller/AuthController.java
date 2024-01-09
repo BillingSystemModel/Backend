@@ -16,6 +16,7 @@ import ru.trkpo.crm.security.data.auth.RegisterRequest;
 @RequestMapping("api/auth")
 @AllArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping("/register")

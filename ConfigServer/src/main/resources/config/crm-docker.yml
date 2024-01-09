@@ -5,5 +5,8 @@ crm-service:
   destination-queue:
     tariffication: tariffication-mq
 
-  jwt-secret: ${JWT_SECRET}
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: 86400000  # Сутки
+
   security-enabled: true
