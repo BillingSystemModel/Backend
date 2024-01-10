@@ -10,8 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface TariffRepository extends CrudRepository<Tariff, String> {
-
     Optional<Tariff> findByIdEquals(String id);
-
-    Page<Tariff> findAll(Pageable pageable);
 }

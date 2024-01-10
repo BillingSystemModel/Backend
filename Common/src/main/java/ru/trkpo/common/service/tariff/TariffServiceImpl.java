@@ -11,6 +11,8 @@ import ru.trkpo.common.data.entity.TelephonyPackage;
 import ru.trkpo.common.exception.NoDataFoundException;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -57,5 +59,15 @@ public class TariffServiceImpl implements TariffService {
             }
         }
         return totalCost;
+    }
+
+    @Override
+    public List<Tariff> getAllTariffs() {
+        Iterator<Tariff> tariffsIterator = tariffRepository.findAll().iterator();
+        List<Tariff> allTariffs = new LinkedList<>();
+        while (tariffsIterator.hasNext()) {
+            allTariffs.add(tariffsIterator.next());
+        }
+        return allTariffs;
     }
 }

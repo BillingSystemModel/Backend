@@ -6,4 +6,5 @@ public interface ClientService {
     Client createNewClient(String[] fio);
     Client saveClient(Client client);
     Client findByPhoneNumber(String phoneNumber);
+    boolean isPhoneNumberExists(String phoneNumber);
 }

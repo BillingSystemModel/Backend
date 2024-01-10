@@ -43,4 +43,11 @@ public class ClientServiceImpl implements ClientService {
         );
     }
 
+    @Override
+    public boolean isPhoneNumberExists(String phoneNumber) {
+        return Boolean.TRUE.equals(transactionTemplate.execute(status ->
+                clientRepository.findByPhoneNumber(phoneNumber).isPresent()
+        ));
+    }
+
 }

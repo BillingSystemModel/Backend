@@ -11,6 +11,10 @@ import ru.trkpo.common.messageBroker.ServiceResponse;
 import ru.trkpo.common.service.callsReport.CallsReportService;
 import ru.trkpo.common.service.phoneNumber.PhoneNumberService;
 import ru.trkpo.crm.TarifficationMessanger;
+import ru.trkpo.crm.data.client.ClientInfo;
+import ru.trkpo.crm.data.tariff.ClientTariffResponse;
+import ru.trkpo.crm.data.tariff.TariffsResponse;
+import ru.trkpo.crm.service.CRMService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,6 +28,7 @@ public class CRMController {
     private final TarifficationMessanger tarifficationMessanger;
     private final PhoneNumberService phoneNumberService;
     private final CallsReportService callsReportService;
+    private final CRMService crmService;
 
     @PatchMapping("/tarifficate")
     public ResponseEntity<Boolean> tarifficate() {
@@ -35,20 +40,36 @@ public class CRMController {
     }
 
     @PatchMapping("/pay")
-    public ResponseEntity<BigDecimal> pay(@RequestParam String phoneNumber, @RequestParam double moneyAdd) {
+    public ResponseEntity<BigDecimal> pay(
+            @RequestParam String phoneNumber,
+            @RequestParam double moneyAdd
+    ) {
         BigDecimal money = BigDecimal.valueOf(moneyAdd);
         return ResponseEntity.ok(phoneNumberService.updateBalance(phoneNumber, money));
     }
 
     @PatchMapping("/changeTariff")
-    public ResponseEntity<String> changeTariff(@RequestParam String phoneNumber, @RequestParam String tariffCode) {
+    public ResponseEntity<String> changeTariff(
+            @RequestParam String phoneNumber,
+            @RequestParam String tariffCode
+    ) {
         return ResponseEntity.ok(phoneNumberService.changeTariff(phoneNumber, tariffCode));
     }
 
+    @PatchMapping("/user/info/{phoneNumber}")
+    public ResponseEntity<String> changeClientInfo(
+            @PathVariable("phoneNumber") String phoneNumber,
+            @RequestBody ClientInfo clientInfo
+    ) {
+        return ResponseEntity.ok(crmService.changeClientInfo(phoneNumber, clientInfo));
+    }
+
     @GetMapping("/report")
-    public ResponseEntity<TarifficationReportDTO> getReport(@RequestParam String phoneNumber,
-                                                            @RequestParam LocalDateTime dateTimeStart,
-                                                            @RequestParam LocalDateTime dateTimeEnd) {
+    public ResponseEntity<TarifficationReportDTO> getReport(
+            @RequestParam String phoneNumber,
+            @RequestParam LocalDateTime dateTimeStart,
+            @RequestParam LocalDateTime dateTimeEnd
+    ) {
         Optional<TarifficationReportDTO> callsReport = callsReportService.getCallsReport(
                 phoneNumber,
                 dateTimeStart,
@@ -58,5 +79,20 @@ public class CRMController {
             report.setPhoneNumber(phoneNumber);
         }
         return callsReport.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.ok(null));
+    }
+
+    @GetMapping("/user/info/{phoneNumber}")
+    public ResponseEntity<ClientInfo> getClientInfo(@PathVariable("phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok(crmService.getClientInfo(phoneNumber));
+    }
+
+    @GetMapping("/tariffs")
+    public ResponseEntity<TariffsResponse> getAllTariffs() {
+        return ResponseEntity.ok(crmService.getAllTariffs());
+    }
+
+    @GetMapping("/tariff/{phoneNumber}")
+    public ResponseEntity<ClientTariffResponse> getAllTariffs(@PathVariable("phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok(crmService.getClientTariff(phoneNumber));
     }
 }

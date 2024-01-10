@@ -5,8 +5,8 @@ data-gen-service:
   services:
     call-type-generator:
       incoming-call-chance: 0.5
-      incoming-call-code: "01"
-      outcoming-call-code: "02"
+      incoming-call-code: "02"
+      outcoming-call-code: "01"
 
     phone-number-generator:
       existing-chance: 0.7
