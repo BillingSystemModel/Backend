@@ -40,13 +40,13 @@ INSERT INTO public.client_details (number_personal_account, email, password, reg
 INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (6, 'msymcoxe5@gmail.com', '$2y$10$IFV46aFtS4kEbmJsfiOJ4OPgJ7RVfVXRyFzcta3lasF8LPVh1yir.', 'RU', '6666666666', '2022-12-06', '6');
 INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (7, 'kourtema@gmail.com', '$2y$10$eZWCxauGu6JnAhSRV1qxoeDZ8OX5/tVbBwUrnPMDRVLqvmW1mia6O', 'RU', '7777777777', '2022-12-07', '7');
 
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+71111111111', '$1.00', '01');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+72222222222', '$2.00', '02');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+73333333333', '$3.00', '03');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+74444444444', '$4.00', '04');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+75555555555', '$5.00', '05');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+76666666666', '$6.00', '06');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('+77777777777', '$7.00', '01');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('71111111111', '$1.00', '01');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('72222222222', '$2.00', '02');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('73333333333', '$3.00', '03');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('74444444444', '$4.00', '04');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('75555555555', '$5.00', '05');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('76666666666', '$6.00', '06');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('77777777777', '$7.00', '01');
 
 INSERT INTO public.users (role) VALUES ('USER');
 INSERT INTO public.users (role) VALUES ('USER');

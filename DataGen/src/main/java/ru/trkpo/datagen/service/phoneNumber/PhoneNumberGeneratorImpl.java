@@ -29,6 +29,6 @@ public class PhoneNumberGeneratorImpl implements PhoneNumberGenerator {
     }
 
     public String generateNewNumber() {
-        return "+7" + random.nextLong(1000000000L, 9999999999L);
+        return "7" + random.nextLong(1000000000L, 9999999999L);
     }
 }
