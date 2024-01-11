@@ -4,3 +4,13 @@ crm-service:
 
   destination-queue:
     tariffication: tariffication-mq
+
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: 86400000  # Сутки
+
+  date-time-format: ddMMyyyy
+
+  incoming-call-code: "02"
+
+  security-enabled: true

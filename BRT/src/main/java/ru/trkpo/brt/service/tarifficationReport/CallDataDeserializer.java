@@ -33,7 +33,7 @@ public class CallDataDeserializer implements Deserializer<CallDataDTO> {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
         LocalDateTime startTime = LocalDateTime.parse(split[1], formatter);
         LocalDateTime endTime = LocalDateTime.parse(split[2], formatter);
-        Duration duration = Duration.parse(split[3]);
+        Duration duration = Duration.ofMinutes(Long.parseLong(split[3]));
         BigDecimal cost = BigDecimal.valueOf(Double.parseDouble(split[4]));
         return Optional.of(new CallDataDTO(split[0], startTime, endTime, duration, cost));
     }

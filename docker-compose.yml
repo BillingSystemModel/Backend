@@ -15,12 +15,15 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+      start_period: 5s
     networks:
       - billing-system-network
     restart: always
 
   activemq-artemis:
-    image: apache/activemq-artemis:latest-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile-apache-artemis
     environment:
       - ARTEMIS_USER=${AMQ_ARTEMIS_USER}
       - ARTEMIS_PASSWORD=${AMQ_ARTEMIS_PASSWORD}
@@ -28,10 +31,11 @@ services:
       - "8161:8161"
       - "${AMQ_ARTEMIS_PORT}:61616"
     healthcheck:
-      test: "curl --silent --fail http://localhost:8161/console || exit 1"
+      test: "curl --silent --fail activemq-artemis:8161"
       interval: 5s
       timeout: 3s
       retries: 5
+      start_period: 5s
     networks:
       - billing-system-network
     restart: always
@@ -44,6 +48,12 @@ services:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
     env_file:
       - .env
+    healthcheck:
+      test: "curl --silent --fail config-server:${CONFIG_SERVER_PORT}/actuator/health | grep UP || exit 1"
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 10s
     networks:
       - billing-system-network
     restart: always
@@ -56,6 +66,17 @@ services:
       - "${DATA_GEN_PORT}:${DATA_GEN_PORT}"
     env_file:
       - .env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --silent --fail data-gen:${DATA_GEN_PORT}/data-gen/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - billing-system-network
     restart: always
@@ -70,6 +91,21 @@ services:
       - "${BRT_PORT}:${BRT_PORT}"
     env_file:
       - .env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      activemq-artemis:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      data-gen:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --silent --fail brt:${BRT_PORT}/brt/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - billing-system-network
     restart: always
@@ -84,6 +120,21 @@ services:
       - "${HRS_PORT}:${HRS_PORT}"
     env_file:
       - .env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      activemq-artemis:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      brt:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --silent --fail hrs:${HRS_PORT}/hrs/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - billing-system-network
     restart: always
@@ -98,6 +149,21 @@ services:
       - "${CRM_PORT}:${CRM_PORT}"
     env_file:
       - .env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      activemq-artemis:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      brt:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --silent --fail crm:${CRM_PORT}/crm/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - billing-system-network
     restart: always

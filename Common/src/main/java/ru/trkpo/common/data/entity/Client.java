@@ -1,15 +1,15 @@
 package ru.trkpo.common.data.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "clients")
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Client {
@@ -28,12 +28,17 @@ public class Client {
     @Column(name = "patronymic", length = 50)
     private String patronymic;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private Integer age;
 
-    @Column(name = "birthday", nullable = false)
+    @Column(name = "birthday")
     private LocalDate birthday;
 
-    @OneToOne(mappedBy = "client")
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private PhoneNumber phoneNumber;
+
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private ClientDetails clientDetails;
 }

@@ -11,6 +11,8 @@ import ru.trkpo.common.data.entity.TelephonyPackage;
 import ru.trkpo.common.exception.NoDataFoundException;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -27,10 +29,10 @@ public class TariffServiceImpl implements TariffService {
     }
 
     @Override
+    @Transactional
     public BigDecimal applyTariff(CDRPlus cdrPlus) {
-        Tariff tariff = transactionTemplate.execute(status ->
-                tariffRepository.findByIdEquals(cdrPlus.getCallTypeCode())
-                        .orElseThrow(() -> new NoDataFoundException("There is no such tariff")));
+        Tariff tariff = tariffRepository.findByIdEquals(cdrPlus.getCallTypeCode())
+                .orElseThrow(() -> new NoDataFoundException("There is no such tariff"));
 
         List<TariffConfig> tariffConfigList = tariff.getTariffConfigList();
         BigDecimal totalCost = BigDecimal.ZERO;
@@ -57,5 +59,15 @@ public class TariffServiceImpl implements TariffService {
             }
         }
         return totalCost;
+    }
+
+    @Override
+    public List<Tariff> getAllTariffs() {
+        Iterator<Tariff> tariffsIterator = tariffRepository.findAll().iterator();
+        List<Tariff> allTariffs = new LinkedList<>();
+        while (tariffsIterator.hasNext()) {
+            allTariffs.add(tariffsIterator.next());
+        }
+        return allTariffs;
     }
 }

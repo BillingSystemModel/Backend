@@ -17,3 +17,7 @@ drop table if exists telephony_packages cascade;
 drop table if exists call_types cascade;
 
 drop table if exists telecom_operators cascade;
+
+drop table if exists users cascade;
+
+drop function if exists get_calls_report(phone_number_param varchar, start_date_param timestamp, end_date_param timestamp);

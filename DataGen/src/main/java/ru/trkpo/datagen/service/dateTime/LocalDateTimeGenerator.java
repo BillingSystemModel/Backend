@@ -6,4 +6,5 @@ import java.time.LocalDateTime;
 
 public interface LocalDateTimeGenerator {
     Pair<LocalDateTime, LocalDateTime> generateDateTime();
+    void updateDateTimeBoubds();
 }
