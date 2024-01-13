@@ -44,7 +44,7 @@ public class CRMService {
                 .contractDate(clientDetails.getContractDate().format(formatter))
                 .region(clientDetails.getRegion())
                 .passport(clientDetails.getPassport())
-                .birthDate(client.getBirthday().format(formatter))
+                .birthDate(client.getBirthday() != null ? client.getBirthday().format(formatter) : null)
                 .email(clientDetails.getEmail())
                 .build();
     }

@@ -23,29 +23,18 @@ public class ClientDetailsServiceImpl implements ClientDetailsService {
                 .email(null)
                 .password(encodedPassword)
                 .region(generateRegion())
-                .passport(generatePassport())
+                .passport(null)
                 .contractDate(LocalDate.now())
                 .contractNumber(generateContractNumber())
                 .build();
     }
 
-    private String generatePassport() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmm");
-        return LocalDateTime.now().format(formatter);
-    }
-
     private String generateRegion() {
-        String[] streetNames = {"Main St", "Oak St", "Maple Ave", "Cedar Ln", "Pine Rd"};
-        String[] cities = {"City1", "City2", "City3", "City4", "City5"};
-        String[] states = {"State1", "State2", "State3", "State4", "State5"};
-        String[] zipCodes = {"12345", "67890", "54321", "98765", "23456"};
+        String[] regions = {
+                "Санкт-Петербург", "Ленинградская область", "Московская область",
+                "Самарская область", "Владимирская область", "Республика Карелия"};
         Random random = new Random();
-
-        String street = streetNames[random.nextInt(streetNames.length)];
-        String city = cities[random.nextInt(cities.length)];
-        String state = states[random.nextInt(states.length)];
-        String zipCode = zipCodes[random.nextInt(zipCodes.length)];
-        return zipCode + ", " + state + ", " + city + " " + street;
+        return regions[random.nextInt(regions.length)];
     }
 
     private String generateContractNumber() {
