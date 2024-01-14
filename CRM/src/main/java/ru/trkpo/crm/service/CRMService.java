@@ -101,6 +101,7 @@ public class CRMService {
         TariffDTO tariffDTO;
         if (tariffDetails == null || tariffDetails.isEmpty()) {
             tariffDTO = TariffDTO.builder()
+                    .id(tariff.getId())
                     .title(tariff.getTitle())
                     .description(tariff.getDescription())
                     .telephonyPackage(null)
@@ -108,6 +109,7 @@ public class CRMService {
                     .build();
         } else {
             tariffDTO = TariffDTO.builder()
+                    .id(tariff.getId())
                     .title(tariff.getTitle())
                     .description(tariff.getDescription())
                     .telephonyPackage(extractTelephonyPackInfo(tariffDetails.get(0)))
