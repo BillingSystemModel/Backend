@@ -74,11 +74,15 @@ public class CRMController {
                 phoneNumber,
                 dateTimeStart,
                 dateTimeEnd);
+        TarifficationReportDTO report;
         if (callsReport.isPresent()) {
-            TarifficationReportDTO report = callsReport.get();
+            report = callsReport.get();
             report.setPhoneNumber(phoneNumber);
+        } else {
+            String tariffCode = crmService.getClientTariff(phoneNumber).getTariff().getId();
+            report = new TarifficationReportDTO(phoneNumber, tariffCode, null, 0, BigDecimal.ZERO);
         }
-        return callsReport.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.ok(null));
+        return ResponseEntity.ok(report);
     }
 
     @GetMapping("/user/info/{phoneNumber}")
