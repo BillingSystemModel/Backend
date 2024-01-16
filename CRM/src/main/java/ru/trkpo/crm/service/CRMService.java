@@ -35,7 +35,9 @@ public class CRMService {
         ClientDetails clientDetails = client.getClientDetails();
         PhoneNumber phone = client.getPhoneNumber();
 
-        String fio = client.getLastName() + " " + client.getFirstName() + " " + client.getPatronymic();
+        String fio = client.getLastName() + " " + client.getFirstName();
+        fio += client.getPatronymic() != null &&
+                !client.getPatronymic().isEmpty() ? " " + client.getPatronymic() : "";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
         return ClientInfo.builder()
                 .fio(fio)
