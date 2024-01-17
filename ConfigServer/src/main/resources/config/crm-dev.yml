@@ -5,6 +5,8 @@ crm-service:
   destination-queue:
     tariffication: tariffication-mq
 
+  data-gen-service-url: "http://localhost:8081/data-gen/generate/cdr"
+
   jwt:
     secret: ${JWT_SECRET}
     expiration: 86400000  # Сутки

@@ -3,7 +3,7 @@ INSERT INTO public.tariffs (id, title, description) VALUES ('02', 'Обычны�
 INSERT INTO public.tariffs (id, title, description) VALUES ('03', 'Блогер', 'Тариф для тех, кто любит смотреть и выкладывать видео');
 INSERT INTO public.tariffs (id, title, description) VALUES ('04', 'Оптимум', 'Оптимальное количество минут и интернета');
 INSERT INTO public.tariffs (id, title, description) VALUES ('05', 'Только Ромашка', 'Бесплатные звонки от любого абонента оператора Ромашка');
-INSERT INTO public.tariffs (id, title, description) VALUES ('06', 'Хз', 'Вставить описание');
+INSERT INTO public.tariffs (id, title, description) VALUES ('06', 'Студент', 'Тариф НЕ для допсёров');
 
 INSERT INTO public.telecom_operators (title) VALUES ('Ромашка');
 
@@ -12,10 +12,10 @@ INSERT INTO public.call_types (id, type) VALUES ('02', 'Входящий');
 
 INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, null, 100, '$5.00', false, '$0.10', true);
 INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, null, 500, '$20.00', false, '$0.10', true);
-INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, 1, 0, '$0.00', false, '$0.00', false);
+INSERT INTO public.telephony_packages (call_type_id, operator_id, package_of_minutes, package_cost, package_cost_per_minute, extra_package_cost, extra_package_cost_per_minute) VALUES (null, 1, 60, '$0.00', false, '$0.00', false);
 
-INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (1000, '$10.00', false, '$0.10', true);
-INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (10000, '$40.00', false, '$0.10', true);
+INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (1024, '$10.00', false, '$0.10', true);
+INSERT INTO public.internet_packages (package_of_mb, package_cost, package_cost_per_mb, extra_package_cost, extra_package_cost_per_mb) VALUES (10240, '$40.00', false, '$0.10', true);
 
 INSERT INTO public.tariffs_config (tariff_id, telephony_package_id, internet_package_id) VALUES ('01', 2, null);
 INSERT INTO public.tariffs_config (tariff_id, telephony_package_id, internet_package_id) VALUES ('02', 1, 1);
@@ -32,21 +32,21 @@ INSERT INTO public.clients (first_name, last_name, patronymic, age, birthday) VA
 INSERT INTO public.clients (first_name, last_name, patronymic, age, birthday) VALUES ('Rogers', 'Furmonger', '', 31, '1993-03-25');
 INSERT INTO public.clients (first_name, last_name, patronymic, age, birthday) VALUES ('Dawna', 'Renfrew', '', 27, '1997-05-13');
 
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (1, 'sriste0@gmail.com', '$2y$10$SkQ363Sd6JiJbS5dIxihTOWctlVnc.gdueR.eX9au9S7F/hz17qb.', 'RU', '1111111111', '2022-12-01', '1');
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (2, 'rfurmonger1@gmail.com', '$2y$10$/uH6paIjSbN4kRW36/wUV.JDrOBtUges4NnatYrPHf35O5yr3zZjm', 'RU', '2222222222', '2022-12-02', '2');
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (3, 'drenfrew2@gmail.com', '$2y$10$KBHN08UEjAO.0YQllnZg4uaqSpmZqnPNHhWF501DB88TCxNsAbTPq', 'RU', '3333333333', '2022-12-03', '3');
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (4, 'rmehaffey3@gmail.com', '$2y$10$KBHN08UEjAO.0YQllnZg4uaqSpmZqnPNHhWF501DB88TCxNsAbTPq', 'RU', '4444444444', '2022-12-04', '4');
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (5, 'cdongal4@gmail.com', '$2y$10$rTKHHK.SO3KlRI034is4qe.HzJfB7ErbyjHQ4qx5Nh93o4TtTEKSO', 'RU', '5555555555', '2022-12-05', '5');
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (6, 'msymcoxe5@gmail.com', '$2y$10$IFV46aFtS4kEbmJsfiOJ4OPgJ7RVfVXRyFzcta3lasF8LPVh1yir.', 'RU', '6666666666', '2022-12-06', '6');
-INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (7, 'kourtema@gmail.com', '$2y$10$eZWCxauGu6JnAhSRV1qxoeDZ8OX5/tVbBwUrnPMDRVLqvmW1mia6O', 'RU', '7777777777', '2022-12-07', '7');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (1, 'kourtema@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 1', '1111111111', '2022-12-01', '111111111111111');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (2, 'cdongal4@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 2', '2222222222', '2022-12-02', '222222222222222');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (3, 'msymcoxe5@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 3', '3333333333', '2022-12-03', '333333333333333');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (4, 'sriste0@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 4', '4444444444', '2022-12-04', '444444444444444');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (5, 'rmehaffey3@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 5', '5555555555', '2022-12-05', '555555555555555');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (6, 'rfurmonger1@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 6', '6666666666', '2022-12-06', '666666666666666');
+INSERT INTO public.client_details (number_personal_account, email, password, region, passport, contract_date, contract_number) VALUES (7, 'drenfrew2@gmail.com', '$2y$10$Lv.JQZMT985/dC0x4GYu7exD6S6SulXNvqw0fIntXvyammJDbll4G', 'Регион 7', '7777777777', '2022-12-07', '777777777777777');
 
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('71111111111', '$1.00', '01');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('72222222222', '$2.00', '02');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('73333333333', '$3.00', '03');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('74444444444', '$4.00', '04');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('75555555555', '$5.00', '05');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('76666666666', '$6.00', '06');
-INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('77777777777', '$7.00', '01');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('71111111111', '$999.00', '01');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('72222222222', '$999.00', '02');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('73333333333', '$999.00', '03');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('74444444444', '$999.00', '04');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('75555555555', '$999.00', '05');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('76666666666', '$999.00', '06');
+INSERT INTO public.phone_numbers (phone_number, balance, tariff_id) VALUES ('77777777777', '$999.00', '01');
 
 INSERT INTO public.users (role) VALUES ('USER');
 INSERT INTO public.users (role) VALUES ('USER');

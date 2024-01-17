@@ -1,6 +1,7 @@
 package ru.trkpo.crm.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CRMController {
 
     private final TarifficationMessanger tarifficationMessanger;
@@ -30,13 +31,16 @@ public class CRMController {
     private final CallsReportService callsReportService;
     private final CRMService crmService;
 
+    @Value("${crm-service.data-gen-service-url}")
+    private String dataGenURL;
+
     @PatchMapping("/tarifficate")
     public ResponseEntity<Boolean> tarifficate() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> responseEntity = new RestTemplate().exchange(
-                "http://localhost:8081/data-gen/generate/cdr",
+                dataGenURL,
                 HttpMethod.POST,
                 requestEntity,
                 String.class
