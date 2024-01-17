@@ -1,9 +1,9 @@
 package ru.trkpo.crm.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import ru.trkpo.common.data.dto.TarifficationReportDTO;
 import ru.trkpo.common.messageBroker.ResponseStatus;
@@ -32,6 +32,18 @@ public class CRMController {
 
     @PatchMapping("/tarifficate")
     public ResponseEntity<Boolean> tarifficate() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = new RestTemplate().exchange(
+                "http://localhost:8081/data-gen/generate/cdr",
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
+        if (responseEntity.getStatusCode().isError())
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ошибка генерации cdr-файла");
+
         ServiceResponse response = tarifficationMessanger.requestTariffication();
         if (response.getResponseStatus().equals(ResponseStatus.SUCCESS))
             return ResponseEntity.ok(true);

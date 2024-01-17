@@ -71,12 +71,19 @@ public class CRMService {
         phone.setPhoneNumber(clientInfo.getPhoneNumber());
         clientDetails.setNumberPersonalAccount(clientInfo.getNumberPersonalAccount());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-        clientDetails.setContractDate(LocalDate.parse(clientInfo.getContractDate(), formatter));
         clientDetails.setRegion(clientInfo.getRegion());
         clientDetails.setPassport(clientInfo.getPassport());
-        client.setBirthday(LocalDate.parse(clientInfo.getBirthDate(), formatter));
         clientDetails.setEmail(clientInfo.getEmail());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+        if (clientInfo.getContractDate() != null)
+            clientDetails.setContractDate(LocalDate.parse(clientInfo.getContractDate(), formatter));
+        else
+            clientDetails.setContractDate(null);
+        if (clientInfo.getBirthDate() != null)
+            client.setBirthday(LocalDate.parse(clientInfo.getBirthDate(), formatter));
+        else
+            client.setBirthday(null);
 
         clientService.saveClient(client);
         return "Client info successfully changed";
@@ -99,8 +106,10 @@ public class CRMService {
     }
 
     private TariffDTO buildTariffDTO(Tariff tariff) {
-        List<TariffConfig> tariffDetails = tariff.getTariffConfigList();
+        if (tariff == null)
+            return new TariffDTO();
         TariffDTO tariffDTO;
+        List<TariffConfig> tariffDetails = tariff.getTariffConfigList();
         if (tariffDetails == null || tariffDetails.isEmpty()) {
             tariffDTO = TariffDTO.builder()
                     .id(tariff.getId())
