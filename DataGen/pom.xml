@@ -7,11 +7,11 @@
     <parent>
         <groupId>ru.trkpo</groupId>
         <artifactId>BillingSystemModel-Backend</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>DataGen</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>DataGen</name>
     <description>Generate data for database and BRT service</description>
 
@@ -40,13 +40,13 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>${postgres.version}</version>
         </dependency>
 
         <dependency>
             <groupId>ru.trkpo</groupId>
             <artifactId>Common</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -55,11 +55,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <image>
-                        <builder>paketobuildpacks/builder-jammy-base:latest</builder>
-                    </image>
-                </configuration>
             </plugin>
         </plugins>
     </build>
