@@ -34,6 +34,8 @@
         <snakeyaml.version>2.0</snakeyaml.version>
         <jjwt.version>0.12.5</jjwt.version>
         <postgres.version>42.7.1</postgres.version>
+        <jacoco.version>0.8.11</jacoco.version>
+        <h2.version>2.2.224</h2.version>
     </properties>
 
 </project>
