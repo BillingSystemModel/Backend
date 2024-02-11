@@ -12,53 +12,48 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class LocalDateTimeGeneratorTest {
+class LocalDateTimeGeneratorTest {
 
-    private static final LocalDateTime lowerBound = LocalDateTime.of(2024, 1, 1, 0, 0);
-    private static final LocalDateTime upperBound = LocalDateTime.of(2024, 2, 1, 0, 0);
-    private static final Duration maxDuration = Duration.ofHours(1);
-    private static final LocalDateTimeGenerator underTestService = new LocalDateTimeGeneratorImpl();
+    private static final LocalDateTime LOWER_BOUND = LocalDateTime.of(2024, 1, 1, 0, 0);
+    private static final LocalDateTime UPPER_BOUND = LocalDateTime.of(2024, 2, 1, 0, 0);
+    private static final Duration MAX_DURATION = Duration.ofHours(1);
+    private static final LocalDateTimeGenerator underTestGenerator = new LocalDateTimeGeneratorImpl();
 
     @BeforeAll
     static void setUpClass() {
-        setField(underTestService, "lowerBound", lowerBound);
-        setField(underTestService, "upperBound", upperBound);
-        setField(underTestService, "maxDuration", maxDuration);
+        setField(underTestGenerator, "lowerBound", LOWER_BOUND);
+        setField(underTestGenerator, "upperBound", UPPER_BOUND);
+        setField(underTestGenerator, "maxDuration", MAX_DURATION);
     }
 
     @Test
     void testGenerateDateTimeShouldReturnDateTimeBetweenLowerAndUpperBound() {
         // Arrange
-        Pair<LocalDateTime, LocalDateTime> resultPair;
         // Act
-        resultPair = underTestService.generateDateTime();
+        Pair<LocalDateTime, LocalDateTime> resultPair = underTestGenerator.generateDateTime();
         // Assert
-        assertTrue(resultPair.getFirst().isAfter(lowerBound) && resultPair.getSecond().isBefore(upperBound));
+        assertTrue(resultPair.getFirst().isAfter(LOWER_BOUND) && resultPair.getSecond().isBefore(UPPER_BOUND));
     }
 
     @Test
     void testGenerateDateTimeShouldReturnResultDurationLessThanMaxDuration() {
         // Arrange
-        Pair<LocalDateTime, LocalDateTime> resultPair;
-        Duration totalDuration;
         // Act
-        resultPair = underTestService.generateDateTime();
-        totalDuration = Duration.between(resultPair.getFirst(), resultPair.getSecond());
+        Pair<LocalDateTime, LocalDateTime> resultPair = underTestGenerator.generateDateTime();
+        Duration totalDuration = Duration.between(resultPair.getFirst(), resultPair.getSecond());
         // Assert
-        assertThat(totalDuration).isLessThan(maxDuration);
+        assertThat(totalDuration).isLessThan(MAX_DURATION);
     }
 
     @Test
     void testUpdateDateTimeBoundsShouldIncreaseDateTimeBoundsByOneMonth() {
         // Arrange
-        LocalDateTime newLowerBound;
-        LocalDateTime newUpperBound;
         // Act
-        underTestService.updateDateTimeBoubds();
-        newLowerBound = (LocalDateTime) getField(underTestService, "lowerBound");
-        newUpperBound = (LocalDateTime) getField(underTestService, "upperBound");
+        underTestGenerator.updateDateTimeBoubds();
+        LocalDateTime newLowerBound = (LocalDateTime) getField(underTestGenerator, "lowerBound");
+        LocalDateTime newUpperBound = (LocalDateTime) getField(underTestGenerator, "upperBound");
         // Assert
-        assertThat(newLowerBound).hasMonth(lowerBound.getMonth().plus(1));
-        assertThat(newUpperBound).hasMonth(upperBound.getMonth().plus(1));
+        assertThat(newLowerBound).hasMonth(LOWER_BOUND.getMonth().plus(1));
+        assertThat(newUpperBound).hasMonth(UPPER_BOUND.getMonth().plus(1));
     }
 }

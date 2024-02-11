@@ -15,11 +15,11 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-public class PhoneNumberGeneratorTest {
+class PhoneNumberGeneratorTest {
 
     @Mock
     private PhoneNumberService phoneNumberServiceMock;
@@ -30,12 +30,12 @@ public class PhoneNumberGeneratorTest {
     @InjectMocks
     private PhoneNumberGeneratorImpl underTestGenerator;
 
-    private static final double existingNumberChance = 0.7;
+    private static final double EXISTING_NUMBER_CHANCE = 0.7;
     private static final String PHONE_NUMBER_REGEX = "^7[0-9]{10}$";
 
     @BeforeEach
-    void setUpClass() {
-        setField(underTestGenerator, "existingNumberChance", existingNumberChance);
+    void setUp() {
+        setField(underTestGenerator, "existingNumberChance", EXISTING_NUMBER_CHANCE);
         setField(underTestGenerator, "random", randomMock);
     }
 
@@ -45,13 +45,14 @@ public class PhoneNumberGeneratorTest {
         String phoneNumber = "71112223344";
         PhoneNumber phoneNumberMock = Mockito.mock(PhoneNumber.class);
         // Act
-        when(randomMock.nextDouble()).thenReturn(existingNumberChance - 0.0001);
+        when(randomMock.nextDouble()).thenReturn(EXISTING_NUMBER_CHANCE - 0.0001);
         when(phoneNumberServiceMock.findRandom()).thenReturn(phoneNumberMock);
         when(phoneNumberMock.getPhoneNumber()).thenReturn(phoneNumber);
         String resultPhoneNumber = underTestGenerator.generateNumber();
         // Assert
         assertThat(resultPhoneNumber).isNotNull().isNotEmpty();
         assertTrue(Pattern.matches(PHONE_NUMBER_REGEX, resultPhoneNumber));
+        verify(phoneNumberServiceMock).findRandom();
     }
 
     @Test
@@ -59,12 +60,15 @@ public class PhoneNumberGeneratorTest {
         // Arrange
         long randomLong = 1112223344L;
         // Act
-        when(randomMock.nextDouble()).thenReturn(existingNumberChance + 0.0001);
+        when(randomMock.nextDouble()).thenReturn(EXISTING_NUMBER_CHANCE + 0.0001);
         when(randomMock.nextLong(1000000000L, 9999999999L)).thenReturn(randomLong);
         String resultPhoneNumber = underTestGenerator.generateNumber();
         // Assert
         assertThat(resultPhoneNumber).isNotNull().isNotEmpty();
         assertTrue(Pattern.matches(PHONE_NUMBER_REGEX, resultPhoneNumber));
+        assertThat(resultPhoneNumber).isEqualTo("7" + randomLong);
+        verify(randomMock).nextLong(1000000000L, 9999999999L);
+        verify(phoneNumberServiceMock, never()).findRandom();
     }
 
     @Test
@@ -77,5 +81,7 @@ public class PhoneNumberGeneratorTest {
         // Assert
         assertThat(resultPhoneNumber).isNotNull().isNotEmpty();
         assertTrue(Pattern.matches(PHONE_NUMBER_REGEX, resultPhoneNumber));
+        assertThat(resultPhoneNumber).isEqualTo("7" + randomLong);
+        verify(randomMock).nextLong(1000000000L, 9999999999L);
     }
 }

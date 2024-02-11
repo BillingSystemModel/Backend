@@ -1,45 +1,58 @@
 package ru.trkpo.datagen.service.callType;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Random;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class CallTypeGeneratorTest {
+@ExtendWith(MockitoExtension.class)
+class CallTypeGeneratorTest {
 
-    private static final double incomingCallChance = 0.5;
-    private static final String incomingCallCode = "02";
-    private static final String outcomingCallCode = "01";
-    private static final CallTypeGenerator callTypeGenerator = new CallTypeGeneratorImpl();
+    @Mock
+    private Random randomMock;
 
-    @BeforeAll
-    static void setUpClass() {
-        setField(callTypeGenerator, "incomingCallChance", incomingCallChance);
-        setField(callTypeGenerator, "incomingCallCode", incomingCallCode);
-        setField(callTypeGenerator, "outcomingCallCode", outcomingCallCode);
+    @InjectMocks
+    private CallTypeGeneratorImpl underTestGenerator;
+
+    private static final double INCOMING_CALL_CHANCE = 0.5;
+    private static final String INCOMING_CALL_CODE = "02";
+    private static final String OUTCOMING_CALL_CODE = "01";
+
+    @BeforeEach
+    void setUp() {
+        setField(underTestGenerator, "incomingCallChance", INCOMING_CALL_CHANCE);
+        setField(underTestGenerator, "incomingCallCode", INCOMING_CALL_CODE);
+        setField(underTestGenerator, "outcomingCallCode", OUTCOMING_CALL_CODE);
+        setField(underTestGenerator, "random", randomMock);
     }
 
     @Test
-    void testGenerateCallTypeShouldReturnCallTypeCodeString() {
+    void testGenerateCallTypeShouldReturnIncomingCallTypeCodeString() {
         // Arrange
-        String callTypeCode;
         // Act
-        callTypeCode = callTypeGenerator.generateCallType();
+        when(randomMock.nextDouble()).thenReturn(INCOMING_CALL_CHANCE - 0.0001);
+        String incomingCallTypeCode = underTestGenerator.generateCallType();
         // Assert
-        assertTrue(
-                callTypeCode.equalsIgnoreCase(incomingCallCode) ||
-                        callTypeCode.equalsIgnoreCase(outcomingCallCode)
-        );
+        assertThat(incomingCallTypeCode).isNotNull().isEqualTo(INCOMING_CALL_CODE);
+        verify(randomMock, times(1)).nextDouble();
     }
 
     @Test
-    void testGenerateCallTypeDoesNotReturnNullOrEmptyString() {
+    void testGenerateCallTypeShouldReturnOutcomingCallTypeCodeString() {
         // Arrange
-        String callTypeCode;
         // Act
-        callTypeCode = callTypeGenerator.generateCallType();
+        when(randomMock.nextDouble()).thenReturn(INCOMING_CALL_CHANCE + 0.0001);
+        String outcomingCallTypeCode = underTestGenerator.generateCallType();
         // Assert
-        assertTrue(callTypeCode != null && !callTypeCode.isEmpty());
+        assertThat(outcomingCallTypeCode).isNotNull().isEqualTo(OUTCOMING_CALL_CODE);
+        verify(randomMock, times(1)).nextDouble();
     }
 }

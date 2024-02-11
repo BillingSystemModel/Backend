@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class CDRSerializerTest {
+class CDRSerializerTest {
 
     private static final CDRSerializer underTestSrlzr = new CDRSerializer();
     private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";

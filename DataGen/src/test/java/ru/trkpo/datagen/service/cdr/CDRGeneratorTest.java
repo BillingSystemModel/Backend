@@ -14,7 +14,7 @@ import ru.trkpo.datagen.service.phoneNumber.PhoneNumberGeneratorImpl;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CDRGeneratorTest {
@@ -50,5 +50,8 @@ public class CDRGeneratorTest {
         assertThat(resultCDR.getPhoneNumber()).isNotNull().isNotEmpty().isEqualTo(phoneNumber);
         assertThat(resultCDR.getStartDateTime()).isNotNull().isEqualTo(startDateTime);
         assertThat(resultCDR.getEndDateTime()).isNotNull().isEqualTo(endDateTime).isAfter(startDateTime);
+        verify(localDateTimeGeneratorMock, times(1)).generateDateTime();
+        verify(callTypeGeneratorMock, times(1)).generateCallType();
+        verify(phoneNumberGeneratorMock, times(1)).generateNumber();
     }
 }
