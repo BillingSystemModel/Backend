@@ -58,9 +58,9 @@ class CDRWriterTest {
         String phoneNumber = "71112223344";
         LocalDateTime startDateTime = LocalDateTime.of(2024, 1, 1, 1, 0);
         LocalDateTime endDateTime = LocalDateTime.of(2024, 1, 1, 1, 30);
-        String resultCDRString = callTypeCode + " "
-                + phoneNumber + " "
-                + startDateTime.format(formatter) + " "
+        String resultCDRString = callTypeCode + ", "
+                + phoneNumber + ", "
+                + startDateTime.format(formatter) + ", "
                 + endDateTime.format(formatter) + '\n';
         CDR record = new CDR(callTypeCode, phoneNumber, startDateTime, endDateTime);
         // Act
@@ -72,7 +72,7 @@ class CDRWriterTest {
         });
         String result = reader.nextLine();
         assertThat(cdrFile).exists().isNotEmpty();
-        assertThat(result.split(" ")).hasSize(6);
+        assertThat(result.split(", ")).hasSize(4);
         assertThat(result).isEqualTo(resultCDRString.substring(0, resultCDRString.length() - 1));
         verify(serializerMock, times(1)).serialize(any(CDR.class));
     }
