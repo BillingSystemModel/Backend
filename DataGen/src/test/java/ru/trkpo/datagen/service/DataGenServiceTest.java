@@ -13,6 +13,7 @@ import ru.trkpo.datagen.service.dateTime.LocalDateTimeGeneratorImpl;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -33,7 +34,8 @@ class DataGenServiceTest {
     @InjectMocks
     private DataGenService underTestService;
     private static final int CDRs_COUNT = 10;
-    private static final String CDR_FILE_PATH = "../files/cdr.txt";
+    private static final String CDR_FILE_PATH = "src/test/resources/files/cdr.txt";
+    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
     @BeforeEach
     void setUp() {
@@ -46,6 +48,7 @@ class DataGenServiceTest {
         File cdrFile = new File(CDR_FILE_PATH);
         String callTypeCode = "01";
         String phoneNumber = "71112223344";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime startDateTime = LocalDateTime.of(2024, 1, 1, 0, 10);
         LocalDateTime endDateTime = LocalDateTime.of(2024, 1, 1, 0, 20);
         CDR testRecord = new CDR(callTypeCode, phoneNumber, startDateTime, endDateTime);
@@ -59,10 +62,10 @@ class DataGenServiceTest {
         doAnswer(invocation -> {
             try (FileWriter writer = new FileWriter(CDR_FILE_PATH, true)) {
                 CDR record = invocation.getArgument(0);
-                String cdrString = record.getCallTypeCode() + " "
-                        + record.getPhoneNumber() + " "
-                        + record.getStartDateTime() + " "
-                        + record.getEndDateTime() + '\n';
+                String cdrString = record.getCallTypeCode() + ", "
+                        + record.getPhoneNumber() + ", "
+                        + record.getStartDateTime().format(formatter) + ", "
+                        + record.getEndDateTime().format(formatter) + '\n';
                 writer.write(cdrString);
             }
             return null;
@@ -76,7 +79,7 @@ class DataGenServiceTest {
             for (int i = 0; i < CDRs_COUNT; i++) {
                 String line = reader.readLine();
                 assertThat(line).isNotNull().isNotEmpty();
-                assertThat(line.split(" ")).hasSize(4);
+                assertThat(line.split(", ")).hasSize(4);
             }
             assertThat(reader.readLine()).isNull();
         }

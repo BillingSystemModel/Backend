@@ -30,7 +30,8 @@ class CDRWriterTest {
     @InjectMocks
     private CDRWriterImpl underTestWriter;
     
-    private static final String CDR_FILE_PATH = "../files/cdr.txt";
+    private static final String CDR_FILE_PATH = "src/test/resources/files/cdr.txt";
+    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
     @BeforeEach
     void setUp() {
@@ -52,7 +53,7 @@ class CDRWriterTest {
     void testWriteShouldCDRRecord() throws FileNotFoundException {
         // Arrange
         File cdrFile = new File(CDR_FILE_PATH);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         Scanner reader = new Scanner(new FileReader(cdrFile));
         String callTypeCode = "01";
         String phoneNumber = "71112223344";
