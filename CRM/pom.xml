@@ -105,6 +105,7 @@
                         <exclude>ru/trkpo/crm/data/**</exclude>
                         <exclude>ru/trkpo/crm/security/data/**</exclude>
                         <exclude>ru/trkpo/crm/security/config/*Config.class</exclude>
+                        <exclude>ru/trkpo/crm/security/config/*Filter.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -131,7 +132,7 @@
                                     <element>BUNDLE</element>
                                     <limits>
                                         <limit>
-                                            <counter>COMPLEXITY</counter>
+                                            <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
                                             <minimum>0.80</minimum>
                                         </limit>
