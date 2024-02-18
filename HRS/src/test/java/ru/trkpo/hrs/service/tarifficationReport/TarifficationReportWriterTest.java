@@ -29,13 +29,14 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 public class TarifficationReportWriterTest {
+
     @Mock
     private Serializer<TarifficationReportDTO> reportSerializerMock;
 
     @InjectMocks
     private TarifficationReportWriterImpl underTestWriter;
 
-    private static final String REPORT_FILE_PATH = "../files/cdr-plus.txt";
+    private static final String REPORT_FILE_PATH = "../files/test-tariffication-reports.txt";
 
     @BeforeEach
     void setUp() {
@@ -46,10 +47,11 @@ public class TarifficationReportWriterTest {
     void testInitShouldCleanReportFile() {
         // Arrange
         File reportFile = new File(REPORT_FILE_PATH);
-        // Act
-        // Assert
+
+        // Act & Assert
         assertDoesNotThrow(() -> underTestWriter.init());
         assertThat(reportFile).exists().isEmpty();
+
         verify(reportSerializerMock, never()).serialize(any(TarifficationReportDTO.class));
     }
 
@@ -57,54 +59,83 @@ public class TarifficationReportWriterTest {
     void testWriteShouldCDRPlusRecord() throws FileNotFoundException {
         // Arrange
         File reportFile = new File(REPORT_FILE_PATH);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         Scanner reader = new Scanner(new FileReader(reportFile));
-        String tariffCode = "02";
-        String phoneNumber1 = "71112223344";
+
+        String tariffCode = "03";
+        String phoneNumber = "71112223344";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime startDateTime1 = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
         LocalDateTime endDateTime1 = LocalDateTime.parse("2024/01/06 23:49:07", formatter);
         LocalDateTime startDateTime2 = LocalDateTime.parse("2024/01/06 23:50:53", formatter);
         LocalDateTime endDateTime2 = LocalDateTime.parse("2024/01/06 23:57:02", formatter);
         String callTypeCode1 = "01";
         String callTypeCode2 = "02";
-        BigDecimal cost = BigDecimal.valueOf(Double.parseDouble("33"));
+        BigDecimal cost = BigDecimal.valueOf(33);
+
         CallDataDTO cd1 = new CallDataDTO(callTypeCode1,
                 startDateTime1,
                 endDateTime1,
                 Duration.between(startDateTime1, endDateTime1),
                 cost);
-        CallDataDTO cd4 = new CallDataDTO(callTypeCode2,
+
+        CallDataDTO cd2 = new CallDataDTO(callTypeCode2,
                 startDateTime2,
                 endDateTime2,
                 Duration.between(startDateTime2, endDateTime2),
                 cost);
-        List<CallDataDTO> calldata1 = new ArrayList<>();
-        calldata1.add(cd1);
-        calldata1.add(cd4);
 
-        long totalMinutes = Duration.between(startDateTime1, endDateTime1).toMinutes() + Duration.between(startDateTime2, endDateTime2).toMinutes();
-        BigDecimal totalCost = BigDecimal.valueOf(Double.parseDouble("66"));
-        TarifficationReportDTO report = new TarifficationReportDTO(phoneNumber1, tariffCode, calldata1, totalMinutes, totalCost);
+        List<CallDataDTO> calldataList = new ArrayList<>();
+        calldataList.add(cd1);
+        calldataList.add(cd2);
 
-        String testString1 = "02, 71112223344, 50, 66.0, 2\n";
-        String testString2 = "02, 2024/01/06 23:04:51, 2024/01/06 23:49:07, 44, 33\n";
-        String testString3 = "02, 2024/01/06 23:50:53, 2024/01/06 23:57:02, 6, 33\n";
-        String testString = testString1.concat(testString2).concat(testString3);
-        // Act
+        long totalMinutes = Duration.between(startDateTime1, endDateTime1).toMinutes() +
+                Duration.between(startDateTime2, endDateTime2).toMinutes();
+        BigDecimal totalCost = cost.add(cost);
+        TarifficationReportDTO report = new TarifficationReportDTO(phoneNumber,
+                tariffCode,
+                calldataList,
+                totalMinutes,
+                totalCost);
+
+        String testStringPart1 = tariffCode + ", " +
+                phoneNumber + ", " +
+                totalMinutes + ", " +
+                totalCost + ", " +
+                calldataList.size() + "\n";
+
+        String testStringPart2 = callTypeCode1 + ", " +
+                startDateTime1.format(formatter) + ", " +
+                endDateTime1.format(formatter) + ", " +
+                Duration.between(startDateTime1, endDateTime1).toMinutes() + ", " +
+                cost + "\n";
+
+        String testStringPart3 = callTypeCode2 + ", " +
+                startDateTime2.format(formatter) + ", " +
+                endDateTime2.format(formatter) + ", " +
+                Duration.between(startDateTime1, endDateTime1).toMinutes() + ", " +
+                cost + "\n";
+
+        String testString = testStringPart1.concat(testStringPart2).concat(testStringPart3);
+
         when(reportSerializerMock.serialize(any(TarifficationReportDTO.class))).thenReturn(testString);
-        // Assert
+
+        // Act & Assert
         assertDoesNotThrow(() -> {
             underTestWriter.init();
             underTestWriter.write(report);
         });
-        String result = reader.nextLine();
+
         assertThat(reportFile).exists().isNotEmpty();
-        assertThat(result).isEqualTo(testString1.substring(0, testString1.length() - 1));
+
+        String result = reader.nextLine();
+        assertThat(result).isEqualTo(testStringPart1.substring(0, testStringPart1.length() - 1));
+
         result = reader.nextLine();
-        assertThat(result).isEqualTo(testString2.substring(0, testString2.length() - 1));
+        assertThat(result).isEqualTo(testStringPart2.substring(0, testStringPart2.length() - 1));
+
         result = reader.nextLine();
-        assertThat(result).isEqualTo(testString3.substring(0, testString3.length() - 1));
+        assertThat(result).isEqualTo(testStringPart3.substring(0, testStringPart3.length() - 1));
+
         verify(reportSerializerMock, times(1)).serialize(any(TarifficationReportDTO.class));
     }
-
 }

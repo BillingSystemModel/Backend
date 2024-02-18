@@ -19,7 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TarifficationReportSerializerTest {
@@ -30,14 +30,12 @@ public class TarifficationReportSerializerTest {
     @InjectMocks
     private TarifficationReportSerializer underTestSerializer;
 
-    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
-
     @Test
     void testSerializeShouldReturnStringReport() {
         // Arrange
-        String tariffCode = "02";
-        String phoneNumber1 = "71112223344";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        String tariffCode = "03";
+        String phoneNumber = "71112223344";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime startDateTime1 = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
         LocalDateTime endDateTime1 = LocalDateTime.parse("2024/01/06 23:49:07", formatter);
         LocalDateTime startDateTime2 = LocalDateTime.parse("2024/01/06 23:50:53", formatter);
@@ -45,31 +43,62 @@ public class TarifficationReportSerializerTest {
         String callTypeCode1 = "01";
         String callTypeCode2 = "02";
         BigDecimal cost = BigDecimal.valueOf(Double.parseDouble("33"));
+
         CallDataDTO cd1 = new CallDataDTO(callTypeCode1,
                 startDateTime1,
                 endDateTime1,
                 Duration.between(startDateTime1, endDateTime1),
                 cost);
-        CallDataDTO cd4 = new CallDataDTO(callTypeCode2,
+
+        CallDataDTO cd2 = new CallDataDTO(callTypeCode2,
                 startDateTime2,
                 endDateTime2,
                 Duration.between(startDateTime2, endDateTime2),
                 cost);
-        List<CallDataDTO> calldata1 = new ArrayList<>();
-        calldata1.add(cd1);
-        calldata1.add(cd4);
 
-        long totalMinutes = Duration.between(startDateTime1, endDateTime1).toMinutes() + Duration.between(startDateTime2, endDateTime2).toMinutes();
-        BigDecimal totalCost = BigDecimal.valueOf(Double.parseDouble("66"));
-        TarifficationReportDTO report = new TarifficationReportDTO(phoneNumber1, tariffCode, calldata1, totalMinutes, totalCost);
+        List<CallDataDTO> calldataList = new ArrayList<>();
+        calldataList.add(cd1);
+        calldataList.add(cd2);
 
-        String testString2 = "02, 2024/01/06 23:04:51, 2024/01/06 23:49:07, 44, 33\n";
-        String testString3 = "02, 2024/01/06 23:50:53, 2024/01/06 23:57:02, 6, 33\n";
-        String testString = "02, 71112223344, 50, 66.0, 2\n".concat(testString2).concat(testString3);
+        long totalMinutes = Duration.between(startDateTime1, endDateTime1).toMinutes() +
+                Duration.between(startDateTime2, endDateTime2).toMinutes();
+        BigDecimal totalCost = cost.add(cost);
+        TarifficationReportDTO report = new TarifficationReportDTO(phoneNumber,
+                tariffCode,
+                calldataList,
+                totalMinutes,
+                totalCost);
+
+        String testStringPart1 = tariffCode + ", " +
+                phoneNumber + ", " +
+                totalMinutes + ", " +
+                totalCost + ", " +
+                calldataList.size() + "\n";
+
+        String testStringPart2 = callTypeCode1 + ", " +
+                startDateTime1.format(formatter) + ", " +
+                endDateTime1.format(formatter) + ", " +
+                Duration.between(startDateTime1, endDateTime1).toMinutes() + ", " +
+                cost;
+
+        String testStringPart3 = callTypeCode1 + ", " +
+                startDateTime2.format(formatter) + ", " +
+                endDateTime2.format(formatter) + ", " +
+                Duration.between(startDateTime1, endDateTime1).toMinutes() + ", " +
+                cost;
+
+        String testString = testStringPart1.concat(testStringPart2).concat(testStringPart3);
+
+        when(callDataSerializerMock.serialize(any(CallDataDTO.class)))
+                .thenReturn(testStringPart2)
+                .thenReturn(testStringPart3);
+
         // Act
-        when(callDataSerializerMock.serialize(any(CallDataDTO.class))).thenReturn(testString2).thenReturn(testString3);
         String resultString = underTestSerializer.serialize(report);
+
         // Assert
         assertThat(resultString).isEqualTo(testString);
+
+        verify(callDataSerializerMock, times(2)).serialize(any(CallDataDTO.class));
     }
 }

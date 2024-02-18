@@ -26,7 +26,6 @@ public class CallDataSerializerTest {
     @Test
     public void testSerializeShouldReturnCallDataString() {
         // Arrange
-        String testString = "02, 2024/01/06 23:04:51, 2024/01/06 23:49:07, 44, 18\n";
         String testCallTypeCode = "02";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime testStartDateTime = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
@@ -34,7 +33,18 @@ public class CallDataSerializerTest {
         Duration testDuration = Duration.between(testStartDateTime, testEndDateTime);
         BigDecimal testCost = BigDecimal.valueOf(18);
 
-        CallDataDTO testCallData = new CallDataDTO(testCallTypeCode, testStartDateTime, testEndDateTime, testDuration, testCost);
+        CallDataDTO testCallData = new CallDataDTO(
+                testCallTypeCode,
+                testStartDateTime,
+                testEndDateTime,
+                testDuration,
+                testCost);
+
+        String testString = testCallTypeCode + ", " +
+                testStartDateTime.format(formatter) + ", " +
+                testEndDateTime.format(formatter) + ", " +
+                Duration.between(testStartDateTime, testEndDateTime).toMinutes() + ", " +
+                testCost + "\n";
 
         // Act
         String resultString = underTestSerializer.serialize(testCallData);
