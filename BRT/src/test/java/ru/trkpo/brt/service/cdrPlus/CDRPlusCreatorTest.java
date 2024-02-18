@@ -16,16 +16,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CDRPlusCreatorTest {
 
     @Mock
-    private static PhoneNumberService phoneNumberServiceMock;
+    private PhoneNumberService phoneNumberServiceMock;
     @InjectMocks
-    private static CDRPlusCreatorImpl underTestCreator;
+    private CDRPlusCreatorImpl underTestCreator;
 
     private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
@@ -41,7 +41,7 @@ public class CDRPlusCreatorTest {
         CDR testCDR = new CDR(testCallTypeCode, testPhoneNumber, testStartDateTime, testEndDateTime);
         Tariff testTariff = new Tariff("01", "Test", "Test", null, null);
         // Act
-        when(phoneNumberServiceMock.findActiveTariff(any(String.class))).thenReturn(testTariff);
+        when(phoneNumberServiceMock.findActiveTariff(anyString())).thenReturn(testTariff);
         Optional<CDRPlus> resultCDRPlus = underTestCreator.createRecord(testCDR);
         // Assert
         assertThat(resultCDRPlus.isPresent()).isTrue();
@@ -61,10 +61,9 @@ public class CDRPlusCreatorTest {
         String testPhoneNumber = "71112223344";
         String testCallTypeCode = "02";
         CDR testCDR = new CDR(testCallTypeCode, testPhoneNumber, testStartDateTime, testEndDateTime);
-        Tariff testTariff = new Tariff("01", "Test", "Test", null, null);
         Optional<CDRPlus> resultCDRPlus;
         // Act
-        when(phoneNumberServiceMock.findActiveTariff(any(String.class))).thenThrow(NoDataFoundException.class);
+        when(phoneNumberServiceMock.findActiveTariff(anyString())).thenThrow(NoDataFoundException.class);
         resultCDRPlus = underTestCreator.createRecord(testCDR);
         // Assert
         assertThat(resultCDRPlus.isEmpty()).isTrue();

@@ -28,10 +28,10 @@ public class TarifficationReportDeserializerTest {
     private BufferedReader readerMock;
 
     @Mock
-    private static CallDataDeserializer callDataDeserializerMock;
+    private CallDataDeserializer callDataDeserializerMock;
 
     @InjectMocks
-    private static TarifficationReportDeserializer underTestDeserializer;
+    private TarifficationReportDeserializer underTestDeserializer;
 
     private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 

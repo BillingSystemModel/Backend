@@ -1,6 +1,7 @@
 package ru.trkpo.brt.service.tarifficationReport;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,12 +30,12 @@ public class CallDataDeserializerTest {
     private BufferedReader readerMock;
 
     @InjectMocks
-    private static final CallDataDeserializer underTestDeserializer = new CallDataDeserializer();
+    private final CallDataDeserializer underTestDeserializer = new CallDataDeserializer();
 
     private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
-    @BeforeAll
-    static void setUpClass() {
+    @BeforeEach
+    void setUpClass() {
         setField(underTestDeserializer, "dateTimeFormat", DATE_TIME_FORMAT);
     }
 
