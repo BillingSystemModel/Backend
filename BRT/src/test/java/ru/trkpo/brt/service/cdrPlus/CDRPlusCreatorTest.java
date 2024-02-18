@@ -17,32 +17,38 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CDRPlusCreatorTest {
 
     @Mock
     private PhoneNumberService phoneNumberServiceMock;
+
     @InjectMocks
     private CDRPlusCreatorImpl underTestCreator;
 
-    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
-
-    // этот тест не проходит при mvn clean install
     @Test
     void testCreateRecordShouldReturnCDRPlusRecord() {
         // Arrange
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime testStartDateTime = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
         LocalDateTime testEndDateTime = LocalDateTime.parse("2024/01/06 23:49:07", formatter);
         String testPhoneNumber = "71112223344";
         String testCallTypeCode = "02";
-        CDR testCDR = new CDR(testCallTypeCode, testPhoneNumber, testStartDateTime, testEndDateTime);
+
+        CDR testCDR = new CDR(testCallTypeCode,
+                testPhoneNumber,
+                testStartDateTime,
+                testEndDateTime);
+
         Tariff testTariff = new Tariff("01", "Test", "Test", null, null);
-        // Act
+
         when(phoneNumberServiceMock.findActiveTariff(anyString())).thenReturn(testTariff);
+
+        // Act
         Optional<CDRPlus> resultCDRPlus = underTestCreator.createRecord(testCDR);
+
         // Assert
         assertThat(resultCDRPlus.isPresent()).isTrue();
         assertThat(resultCDRPlus.get().getCallTypeCode()).isEqualTo(testCallTypeCode);
@@ -50,22 +56,32 @@ public class CDRPlusCreatorTest {
         assertThat(resultCDRPlus.get().getStartDateTime()).isEqualTo(testStartDateTime);
         assertThat(resultCDRPlus.get().getEndDateTime()).isEqualTo(testEndDateTime);
         assertThat(resultCDRPlus.get().getTariffCode()).isEqualTo(testTariff.getId());
+
+        verify(phoneNumberServiceMock, times(1)).findActiveTariff(anyString());
     }
 
     @Test
     void testCreateRecordShouldThrowNoDataFoundExceptionWhenInvalidPhone() {
         // Arrange
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime testStartDateTime = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
         LocalDateTime testEndDateTime = LocalDateTime.parse("2024/01/06 23:49:07", formatter);
         String testPhoneNumber = "71112223344";
         String testCallTypeCode = "02";
-        CDR testCDR = new CDR(testCallTypeCode, testPhoneNumber, testStartDateTime, testEndDateTime);
-        Optional<CDRPlus> resultCDRPlus;
-        // Act
+
+        CDR testCDR = new CDR(testCallTypeCode,
+                testPhoneNumber,
+                testStartDateTime,
+                testEndDateTime);
+
         when(phoneNumberServiceMock.findActiveTariff(anyString())).thenThrow(NoDataFoundException.class);
-        resultCDRPlus = underTestCreator.createRecord(testCDR);
+
+        // Act
+        Optional<CDRPlus> resultCDRPlus = underTestCreator.createRecord(testCDR);
+
         // Assert
         assertThat(resultCDRPlus.isEmpty()).isTrue();
+
+        verify(phoneNumberServiceMock, times(1)).findActiveTariff(anyString());
     }
 }

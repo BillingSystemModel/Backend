@@ -33,7 +33,7 @@ public class CDRPlusWriterTest {
     @InjectMocks
     private CDRPlusWriterImpl underTestWriter;
 
-    private static final String CDR_PLUS_FILE_PATH = "../files/cdr-plus.txt";
+    private static final String CDR_PLUS_FILE_PATH = "../files/test-cdr-plus.txt";
 
     @BeforeEach
     void setUp() {
@@ -44,44 +44,57 @@ public class CDRPlusWriterTest {
     void testInitShouldCleanCDRFile() {
         // Arrange
         File cdrPlusFile = new File(CDR_PLUS_FILE_PATH);
-        // Act
-        // Assert
+        // Act & Assert
         assertDoesNotThrow(() -> underTestWriter.init());
         assertThat(cdrPlusFile).exists().isEmpty();
+
         verify(cdrPlusSerializerMock, never()).serialize(any(CDRPlus.class));
     }
 
     @Test
-    void testWriteShouldCDRPlusRecord() throws FileNotFoundException {
+    void testWriteShouldWriteCDRPlusRecordInFile() throws FileNotFoundException {
         // Arrange
         File cdrPlusFile = new File(CDR_PLUS_FILE_PATH);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         Scanner reader = new Scanner(new FileReader(cdrPlusFile));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String testCallTypeCode = "01";
         String testPhoneNumber = "71112223344";
-        LocalDateTime testStartDateTime = LocalDateTime.of(2024, 1, 1, 1, 0);
-        LocalDateTime testEndDateTime = LocalDateTime.of(2024, 1, 1, 1, 30);
+        LocalDateTime testStartDateTime = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
+        LocalDateTime testEndDateTime = LocalDateTime.parse("2024/01/06 23:49:07", formatter);
         Duration testDuration = Duration.ofMinutes(44);
         String testTariffCode = "03";
+
         String resultCDRPlusString = testCallTypeCode + " "
                 + testPhoneNumber + " "
                 + testStartDateTime.format(formatter) + " "
                 + testEndDateTime.format(formatter) + " "
                 + testDuration + " "
                 + testTariffCode + '\n';
-        CDRPlus record = new CDRPlus(testCallTypeCode, testPhoneNumber, testStartDateTime, testEndDateTime, testDuration, testTariffCode);
+
+        CDRPlus record = new CDRPlus(
+                testCallTypeCode,
+                testPhoneNumber,
+                testStartDateTime,
+                testEndDateTime,
+                testDuration,
+                testTariffCode);
+
         // Act
         when(cdrPlusSerializerMock.serialize(Mockito.any(CDRPlus.class))).thenReturn(resultCDRPlusString);
+
         // Assert
         assertDoesNotThrow(() -> {
             underTestWriter.init();
             underTestWriter.write(record);
         });
-        String result = reader.nextLine();
+
         assertThat(cdrPlusFile).exists().isNotEmpty();
+
+        String result = reader.nextLine();
         assertThat(result.split(" ")).hasSize(8);
         assertThat(result).isEqualTo(resultCDRPlusString.substring(0, resultCDRPlusString.length() - 1));
+
         verify(cdrPlusSerializerMock, times(1)).serialize(any(CDRPlus.class));
     }
-
 }

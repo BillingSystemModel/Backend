@@ -25,8 +25,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -41,13 +40,7 @@ public class CDRProviderTest {
     @InjectMocks
     private CDRProviderImpl underTestProvider;
 
-    private static final String FILE_PATH = "..\\files\\cdrProvider.txt";
-    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
-
-    @BeforeAll
-    static void setUp() {
-
-    }
+    private static final String FILE_PATH = "..\\files\\test-cdr.txt";
 
     @BeforeEach
     void setUpClass() {
@@ -56,60 +49,79 @@ public class CDRProviderTest {
 
     @Test
     void testInitShouldMakeReader() throws IOException {
-        // Arrange
-        // Act
+        // Arrange & Act
         try (MockedConstruction<UrlResource> mockUrlResource = mockConstruction(UrlResource.class, (mock, context) -> {
             when(mock.getInputStream()).thenReturn(new FileInputStream(FILE_PATH));
         })) {
             underTestProvider.init();
         }
-        // Assert
+
+        // Act & Assert
         assertThat(getField(underTestProvider, "reader")).isNotNull();
+
+        verify(cdrDeserializerMock, never()).deserialize(any(BufferedReader.class));
     }
 
-    // todo: обозвать тест
     @Test
-    void testGetCDRsListShould() throws IOException {
-        // Arrange
+    void testGetCDRsListShouldReturnListOfCDRs() throws IOException {
+        // Arrange & Act
         String callTypeCode = "02";
         String phoneNumber = "71112223344";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime startDateTime1 = LocalDateTime.parse("2024/01/06 23:04:51", formatter);
         LocalDateTime endDateTime1 = LocalDateTime.parse("2024/01/06 23:49:07", formatter);
         LocalDateTime startDateTime2 = LocalDateTime.parse("2024/01/06 23:50:53", formatter);
         LocalDateTime endDateTime2 = LocalDateTime.parse("2024/01/06 23:57:02", formatter);
-        CDR record1 = new CDR(callTypeCode, phoneNumber, startDateTime1, endDateTime1);
-        CDR record2 = new CDR(callTypeCode, phoneNumber, startDateTime2, endDateTime2);
+
+        CDR record1 = new CDR(callTypeCode,
+                phoneNumber,
+                startDateTime1,
+                endDateTime1);
+
+        CDR record2 = new CDR(callTypeCode,
+                phoneNumber,
+                startDateTime2,
+                endDateTime2);
+
         List<CDR> testList = new ArrayList<>();
         testList.add(record1);
         testList.add(record2);
-        // Act
+
         try (MockedConstruction<UrlResource> mockUrlResource = mockConstruction(UrlResource.class, (mock, context) -> {
             when(mock.getInputStream()).thenReturn(new FileInputStream(FILE_PATH));
         })) {
             underTestProvider.init();
         }
-        when(cdrDeserializerMock.deserialize(any(BufferedReader.class))).thenReturn(Optional.of(record1))
+
+        when(cdrDeserializerMock.deserialize(any(BufferedReader.class)))
+                .thenReturn(Optional.of(record1))
                 .thenReturn(Optional.of(record2))
                 .thenReturn(Optional.empty());
+
         List<CDR> resultCDRList = underTestProvider.getCDRsList();
+
         // Assert
         assertThat(resultCDRList).isEqualTo(testList);
+
+        verify(cdrDeserializerMock, times(3)).deserialize(any(BufferedReader.class));
     }
 
     @Test
     void testGetCDRsCorrectlyWorkWithUncheckedException() throws IOException {
-        // Arrange
-        // Act
+        // Arrange & Act
         try (MockedConstruction<UrlResource> mockUrlResource = mockConstruction(UrlResource.class, (mock, context) -> {
             when(mock.getInputStream()).thenReturn(new FileInputStream(FILE_PATH));
         })) {
             underTestProvider.init();
         }
+
         when(cdrDeserializerMock.deserialize(any(BufferedReader.class))).thenThrow(IOException.class);
-        // Assert
+
+        // Act & Assert
         assertThrows(UncheckedIOException.class, () -> {
             underTestProvider.getCDRsList();
         });
+
+        verify(cdrDeserializerMock, times(1)).deserialize(any(BufferedReader.class));
     }
 }
