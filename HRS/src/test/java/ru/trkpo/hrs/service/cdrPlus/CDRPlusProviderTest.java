@@ -38,7 +38,7 @@ public class CDRPlusProviderTest {
     @InjectMocks
     private CDRPlusProviderImpl underTestProvider;
 
-    private static final String FILE_PATH = "..\\files\\test-cdr-plus.txt";
+    private static final String FILE_PATH = "src/test/resources/test-cdr-plus.txt";
 
     @BeforeEach
     void setUpClass() {
