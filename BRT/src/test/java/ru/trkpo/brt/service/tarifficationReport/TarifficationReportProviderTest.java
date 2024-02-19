@@ -39,7 +39,7 @@ public class TarifficationReportProviderTest {
 
     @InjectMocks
     private TarrificationReportProviderImpl underTestProvider;
-    private static final String FILE_PATH = "..\\files\\test-tariffication-reports.txt";
+    private static final String FILE_PATH = "src/test/resources/test-tariffication-reports.txt";
 
     @BeforeEach
     void setUpClass() {

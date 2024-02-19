@@ -19,7 +19,7 @@ import ru.trkpo.common.messageBroker.ResponseStatus;
 import ru.trkpo.common.messageBroker.ServiceResponse;
 import ru.trkpo.common.service.phoneNumber.PhoneNumberService;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -31,7 +31,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TarifficationServiceTest {
@@ -274,9 +273,7 @@ public class TarifficationServiceTest {
         doThrow(exception).when(cdrPlusWriterMock).write(any(CDRPlus.class));
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> {
-            underTestService.tarifficate();
-        });
+        assertThrows(RuntimeException.class, () -> underTestService.tarifficate());
 
         verify(cdrProviderMock, times(1)).init();
         verify(cdrPlusWriterMock, times(1)).init();

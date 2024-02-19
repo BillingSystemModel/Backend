@@ -1,7 +1,5 @@
 package ru.trkpo.brt.service.cdr;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +9,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.UrlResource;
 import ru.trkpo.common.data.CDR;
+import ru.trkpo.common.service.Deserializer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -29,8 +28,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-import ru.trkpo.common.service.Deserializer;
-
 @ExtendWith(MockitoExtension.class)
 public class CDRProviderTest {
 
@@ -40,7 +37,7 @@ public class CDRProviderTest {
     @InjectMocks
     private CDRProviderImpl underTestProvider;
 
-    private static final String FILE_PATH = "..\\files\\test-cdr.txt";
+    private static final String FILE_PATH = "src/test/resources/test-cdr.txt";
 
     @BeforeEach
     void setUpClass() {

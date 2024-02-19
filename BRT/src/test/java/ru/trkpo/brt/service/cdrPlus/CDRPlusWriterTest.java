@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +32,7 @@ public class CDRPlusWriterTest {
     @InjectMocks
     private CDRPlusWriterImpl underTestWriter;
 
-    private static final String CDR_PLUS_FILE_PATH = "../files/test-cdr-plus.txt";
+    private static final String CDR_PLUS_FILE_PATH = "src/test/resources/test-cdr-plus.txt";
 
     @BeforeEach
     void setUp() {
