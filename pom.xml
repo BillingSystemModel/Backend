@@ -36,6 +36,8 @@
         <postgres.version>42.7.1</postgres.version>
         <jacoco.version>0.8.11</jacoco.version>
         <h2.version>2.2.224</h2.version>
+        <testcontainers.version>1.19.7</testcontainers.version>
+        <failsafe-plugin.version>3.2.5</failsafe-plugin.version>
     </properties>
 
 </project>
