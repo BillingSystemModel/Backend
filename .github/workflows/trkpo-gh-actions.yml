@@ -1,17 +1,20 @@
-name: TRKPO GH Actions
-on: [push]
+name: TRKPO Backend CI
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+  pull_request:
+    branches:
+      - master
+      - dev
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '15'
-          postgresql db: billing_system
-          postgresql user: admin
-          postgresql password: admin
-
-      - name: Checkout Backend project
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21 for x64
@@ -22,27 +25,14 @@ jobs:
           architecture: x64
           cache: maven
 
-      - name: Run build
+      - name: Build with Maven
         run: mvn clean install -DskipTests
-
-      - name: Run Unit Tests
-        run: mvn test -DskipIntegrationTests
-
-      - name: Run Integration Tests
-        run: mvn test -DskipUnitTests
 
   unit-tests:
-    needs: [build]
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '15'
-          postgresql db: billing_system
-          postgresql user: admin
-          postgresql password: admin
-
-      - name: Checkout Backend project
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21 for x64
@@ -53,24 +43,14 @@ jobs:
           architecture: x64
           cache: maven
 
-      - name: Run build
-        run: mvn clean install -DskipTests
-
-      - name: Run Unit Tests
-        run: mvn test -DskipIntegrationTests
+      - name: Unit Testing with Maven
+        run: mvn test
 
   integration-tests:
-    needs: [build]
+    needs: unit-tests
     runs-on: ubuntu-latest
     steps:
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '15'
-          postgresql db: billing_system
-          postgresql user: admin
-          postgresql password: admin
-
-      - name: Checkout Backend project
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21 for x64
@@ -81,8 +61,5 @@ jobs:
           architecture: x64
           cache: maven
 
-      - name: Run build
-        run: mvn clean install -DskipTests
-
-      - name: Run Unit Tests
-        run: mvn test -DskipUnitTests
+      - name: Integration Testing with Maven
+        run: mvn failsafe:integration-test
