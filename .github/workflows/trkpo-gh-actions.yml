@@ -1,0 +1,13 @@
+name: TRKPO GH Actions
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  TRKPO-GH-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Backend project
+        uses: actions/checkout@v3
+      - name: Clean
+        run: mvn clean
+      - name: Install dependencies & Run module tests
+        run: mvn install
