@@ -53,6 +53,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+      
       - name: Set up JDK 21 for x64
         uses: actions/setup-java@v4
         with:
@@ -61,5 +64,10 @@ jobs:
           architecture: x64
           cache: maven
 
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
       - name: Integration Testing with Maven
-        run: mvn failsafe:integration-test
+        env:
+          JWT_TOKEN: ${{ secrets.JWT_TOKEN }}
+        run: mvn verify
