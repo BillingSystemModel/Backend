@@ -1,6 +1,7 @@
 package ru.trkpo.crm.controller;
 
 import org.hamcrest.core.IsNull;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import ru.trkpo.common.messageBroker.ServiceResponse;
 import ru.trkpo.crm.TarifficationMessanger;
 import ru.trkpo.crm.data.client.ClientInfo;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +66,16 @@ class CRMControllerIT {
             .withPassword("admin")
             .withExposedPorts(61616);
 
+    private static Connection connection;
+
+    @BeforeAll
+    static void beforeAll() throws SQLException {
+        String url = postgres.getJdbcUrl();
+        String username = postgres.getUsername();
+        String password = postgres.getPassword();
+        connection = DriverManager.getConnection(url, username, password);
+    }
+
     @Value("${crm-service.destination-queue.tariffication}")
     private String destination;
 
@@ -96,11 +108,11 @@ class CRMControllerIT {
         when(restTemplateMock.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
                 .thenReturn(new ResponseEntity<>("Some response", HttpStatus.OK));
         when(messangerMock.requestTariffication())
-        .thenAnswer(answer -> {
-            jmsMessagingTemplate.convertAndSend(destination, new ServiceRequest(destination));
-            jmsMessagingTemplate.receive(destination);
-            return new ServiceResponse(ResponseStatus.SUCCESS, "Some message");
-        });
+                .thenAnswer(answer -> {
+                    jmsMessagingTemplate.convertAndSend(destination, new ServiceRequest(destination));
+                    jmsMessagingTemplate.receive(destination);
+                    return new ServiceResponse(ResponseStatus.SUCCESS, "Some message");
+                });
         mockMvc.perform(patch("/api/tarifficate"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isBoolean())
@@ -116,14 +128,17 @@ class CRMControllerIT {
         String phoneNumber = "79113332211";
         double moneyToAdd = 50.0;
 
-        mockMvc.perform(patch("/api/pay")
-                        .param("phoneNumber", phoneNumber)
-                        .param("moneyAdd", String.valueOf(moneyToAdd)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNumber())
-                .andExpect(content().string(500 + moneyToAdd + "0"))
-                .andDo(print()); // Проверка, что в ответе есть число (баланс)
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery("SELECT p.balance FROM phone_numbers p WHEN phoneNumber = '" + phoneNumber + "'")) {
+            mockMvc.perform(patch("/api/pay")
+                            .param("phoneNumber", phoneNumber)
+                            .param("moneyAdd", String.valueOf(moneyToAdd)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$").isNumber())
+                    .andExpect(content().string(rs.getDouble(0) + moneyToAdd + "0"))
+                    .andDo(print()); // Проверка, что в ответе есть число (баланс)
+        }
     }
 
     @Test
