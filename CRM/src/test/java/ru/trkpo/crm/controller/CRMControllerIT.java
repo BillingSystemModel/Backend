@@ -129,14 +129,14 @@ class CRMControllerIT {
         double moneyToAdd = 50.0;
 
         try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery("SELECT p.balance FROM phone_numbers p WHEN phoneNumber = '" + phoneNumber + "'")) {
+             ResultSet rs = st.executeQuery("SELECT p.balance FROM phone_numbers p WHERE phone_number = '" + phoneNumber + "'")) {
             mockMvc.perform(patch("/api/pay")
                             .param("phoneNumber", phoneNumber)
                             .param("moneyAdd", String.valueOf(moneyToAdd)))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$").isNumber())
-                    .andExpect(content().string(rs.getDouble(0) + moneyToAdd + "0"))
+                    .andExpect(content().string(rs.getBigDecimal("Balance").doubleValue() + moneyToAdd + "0"))
                     .andDo(print()); // Проверка, что в ответе есть число (баланс)
         }
     }
