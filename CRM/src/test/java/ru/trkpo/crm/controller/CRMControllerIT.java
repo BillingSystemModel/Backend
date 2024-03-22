@@ -1,6 +1,7 @@
 package ru.trkpo.crm.controller;
 
 import org.hamcrest.core.IsNull;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,8 @@ import ru.trkpo.common.messageBroker.ServiceResponse;
 import ru.trkpo.crm.TarifficationMessanger;
 import ru.trkpo.crm.data.client.ClientInfo;
 
+import java.math.BigDecimal;
+import java.sql.*;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +67,8 @@ class CRMControllerIT {
             .withPassword("admin")
             .withExposedPorts(61616);
 
+    private static Connection connection;
+
     @Value("${crm-service.destination-queue.tariffication}")
     private String destination;
 
@@ -77,6 +82,14 @@ class CRMControllerIT {
                         artemis.getHost(), artemis.getMappedPort(61616)));
         registry.add("spring.artemis.user", artemis::getUser);
         registry.add("spring.artemis.password", artemis::getPassword);
+    }
+
+    @BeforeAll
+    static void beforeAll() throws SQLException {
+        String url = postgres.getJdbcUrl();
+        String username = postgres.getUsername();
+        String password = postgres.getPassword();
+        connection = DriverManager.getConnection(url, username, password);
     }
 
     @Test
@@ -112,18 +125,28 @@ class CRMControllerIT {
     }
 
     @Test
-    void testPayEndpoint() throws Exception {
+    public void testPayEndpoint() throws Exception {
         String phoneNumber = "79113332211";
         double moneyToAdd = 50.0;
+        String query = "SELECT balance FROM phone_numbers WHERE phone_number = ?";
 
-        mockMvc.perform(patch("/api/pay")
-                        .param("phoneNumber", phoneNumber)
-                        .param("moneyAdd", String.valueOf(moneyToAdd)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNumber())
-                .andExpect(content().string(500 + moneyToAdd + "0"))
-                .andDo(print()); // Проверка, что в ответе есть число (баланс)
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, phoneNumber);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    BigDecimal balance = rs.getBigDecimal("balance");
+                    balance = balance.add(BigDecimal.valueOf(moneyToAdd));
+                    mockMvc.perform(patch("/api/pay")
+                                    .param("phoneNumber", phoneNumber)
+                                    .param("moneyAdd", String.valueOf(moneyToAdd)))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(jsonPath("$").isNumber())
+                            .andExpect(content().string(balance.toString()))
+                            .andDo(print());
+                }
+            }
+        }
     }
 
     @Test
