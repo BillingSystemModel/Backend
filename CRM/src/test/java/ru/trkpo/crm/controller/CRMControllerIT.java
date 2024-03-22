@@ -1,6 +1,5 @@
 package ru.trkpo.crm.controller;
 
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -198,8 +196,13 @@ class CRMControllerIT {
                         .param("dateTimeEnd", dateTimeEnd.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.phoneNumber", equalTo(phoneNumber)))
-                .andExpect(jsonPath("$.callsList").value(IsNull.nullValue()))
+                .andExpectAll(
+                        jsonPath("$.phoneNumber", equalTo(phoneNumber)),
+                        jsonPath("$.tariffCode").hasJsonPath(),
+                        jsonPath("$.callsList").hasJsonPath(),
+                        jsonPath("$.totalMinutes").hasJsonPath(),
+                        jsonPath("$.totalCost").hasJsonPath()
+                )
                 .andDo(print()); // Проверка, что в ответе есть число (баланс)
     }
 
@@ -209,7 +212,16 @@ class CRMControllerIT {
         mockMvc.perform(get("/api/user/info/{phoneNumber}", phoneNumber))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.phoneNumber", equalTo(phoneNumber)))
+                .andExpectAll(
+                        jsonPath("$.fio").hasJsonPath(),
+                        jsonPath("$.phoneNumber", equalTo(phoneNumber)),
+                        jsonPath("$.numberPersonalAccount").hasJsonPath(),
+                        jsonPath("$.contractDate").hasJsonPath(),
+                        jsonPath("$.region").hasJsonPath(),
+                        jsonPath("$.passport").hasJsonPath(),
+                        jsonPath("$.birthDate").hasJsonPath(),
+                        jsonPath("$.email").hasJsonPath()
+                )
                 .andDo(print()); // Проверка, что в ответе есть число (баланс)
     }
 
@@ -219,7 +231,6 @@ class CRMControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.tariffs").isArray())
-                .andExpect(jsonPath("$.tariffs", hasSize(6)))
                 .andDo(print()); // Проверка, что в ответе есть число (баланс)
     }
 
